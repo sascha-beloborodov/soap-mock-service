@@ -1,0 +1,1755 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:tnwebservice" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" name="TNWebService" targetNamespace="urn:tnwebservice">
+    <wsdl:documentation>
+        Service: TN 1C Web Service for E-Commerce
+        Version: 1.2 (describes Integration Specification v1.2)
+    </wsdl:documentation>
+    <wsdl:types>
+        <xsd:schema targetNamespace="urn:tnwebservice" elementFormDefault="qualified" attributeFormDefault="qualified">
+            <xsd:complexType name="ArrayOfString">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfUri">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="xsd:anyURI"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Service auth element -->
+            <xsd:element name="serviceAuth">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="key" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- Products information -->
+            <xsd:element name="getProductsList">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="products" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getProductsListResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfProductEntity"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfProductEntity">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductEntity"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ProductEntity">
+                <xsd:sequence>
+                    <xsd:element name="group" type="xsd:string" />
+                    <xsd:element name="code" type="xsd:string" />
+                    <xsd:element name="ekn" type="xsd:string" />
+                    <xsd:element name="name" type="xsd:string" />
+                    <xsd:element name="doc_name" type="xsd:string" />
+                    <xsd:element name="spec_unit" type="xsd:string" />
+                    <xsd:element name="base_unit" type="xsd:string" />
+                    <xsd:element name="shipping_place_unit" type="xsd:string" />
+                    <xsd:element name="shipping_place_unit_adjustment" type="tns:ArrayOfProductShippingPlaceUnitAdjustment" />
+                    <xsd:element name="measure_units" type="tns:ArrayOfProductMeasureUnit" />
+                    <xsd:element name="description" type="xsd:string" minOccurs="0" nillable="true"/>
+                    <xsd:element name="application" type="xsd:string" minOccurs="0" nillable="true"/>
+                    <xsd:element name="storing" type="xsd:string" minOccurs="0" nillable="true"/>
+                    <xsd:element name="attributes" type="tns:ArrayOfProductAttributeValue" />
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfProductShippingPlaceUnitAdjustment">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductShippingPlaceUnitAdjustment"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ProductShippingPlaceUnitAdjustment">
+                <xsd:sequence>
+                    <xsd:element name="city" type="xsd:string"/>
+                    <xsd:element name="code" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfProductMeasureUnit">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductMeasureUnit"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ProductMeasureUnit">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="classifier_code" type="xsd:string"/>
+                    <xsd:element name="volume" type="xsd:double"/>
+                    <xsd:element name="net_weight" type="xsd:double"/>
+                    <xsd:element name="gross_weight" type="xsd:double"/>
+                    <xsd:element name="weight_adjustment" type="tns:ArrayOfProductWeightAdjustment"/>
+                    <xsd:element name="coeff" type="xsd:decimal"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfProductWeightAdjustment">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductWeightAdjustment"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ProductWeightAdjustment">
+                <xsd:sequence>
+                    <xsd:element name="city" type="xsd:string"/>
+                    <xsd:element name="gross_weight" type="xsd:double"/>
+                    <xsd:element name="net_weight" type="xsd:double"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfProductAttributeValue">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductAttributeValue"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ProductAttributeValue">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="value" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Products groups information -->
+            <xsd:element name="getProductsGroups">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="groups" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getProductsGroupsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfProductGroup"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfProductGroup">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductGroup"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ProductGroup">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="name" type="xsd:string"/>
+                    <xsd:element name="attributes" type="tns:ArrayOfString"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Products attributes information -->
+            <xsd:element name="getProductsAttributes">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="attributes" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getProductsAttributesResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfProductAttribute"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfProductAttribute">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductAttribute"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ProductAttribute">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="name" type="xsd:string"/>
+                    <xsd:element name="type" type="tns:ProductAttributeType"/>
+                    <xsd:element name="options" type="tns:ArrayOfProductAttributeOption" minOccurs="0" nillable="true"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfProductAttributeOption">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductAttributeOption"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ProductAttributeOption">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="label" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="ProductAttributeType">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="varchar"/>
+                    <xsd:enumeration value="text"/>
+                    <xsd:enumeration value="options"/>
+                    <xsd:enumeration value="decimal"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+
+            <!-- Products prices information -->
+            <xsd:element name="getProductsPrices">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="products" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                        <xsd:element name="cities" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getChangedProductsPrices">
+                <xsd:complexType>
+                    <xsd:sequence />
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getProductsPricesResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfProductPrice"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfProductPrice">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductPrice"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ProductPrice">
+                <xsd:sequence>
+                    <xsd:element name="product" type="xsd:string"/>
+                    <xsd:element name="price" type="xsd:decimal"/>
+                    <xsd:element name="measure_unit" type="xsd:string"/>
+                    <xsd:element name="city" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Products stock information -->
+            <xsd:element name="getProductsStock">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="products" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                        <xsd:element name="cities" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getChangedProductsStock">
+                <xsd:complexType>
+                    <xsd:sequence />
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getProductsStockResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfProductStock"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfProductStock">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductStock"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ProductStock">
+                <xsd:sequence>
+                    <xsd:element name="product" type="xsd:string"/>
+                    <xsd:element name="qty" type="xsd:double"/>
+                    <xsd:element name="measure_unit" type="xsd:string"/>
+                    <xsd:element name="warehouse" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Loading rates information -->
+            <xsd:element name="getLoadingRates">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="products" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                        <xsd:element name="cities" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getLoadingRatesResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfLoadingRate"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfLoadingRate">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:LoadingRate"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="LoadingRate">
+                <xsd:sequence>
+                    <xsd:element name="product" type="xsd:string"/>
+                    <xsd:element name="transport" type="xsd:string"/>
+                    <xsd:element name="qty" type="xsd:double"/>
+                    <xsd:element name="measure_unit" type="xsd:string"/>
+                    <xsd:element name="city" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- QTY restrictions rates information -->
+            <xsd:element name="getQtyRestrictions">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="products" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                        <xsd:element name="warehouses" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getQtyRestrictionsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfQtyRestriction"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfQtyRestriction">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:QtyRestriction"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="QtyRestriction">
+                <xsd:sequence>
+                    <xsd:element name="product" type="xsd:string"/>
+                    <xsd:element name="qty" type="xsd:double"/>
+                    <xsd:element name="measure_unit" type="xsd:string"/>
+                    <xsd:element name="rule" type="tns:QtyRestrictionRule"/>
+                    <xsd:element name="warehouse" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="QtyRestrictionRule">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="min_qty"/>
+                    <xsd:enumeration value="fold"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+
+            <!-- Transports information -->
+            <xsd:element name="getTransports">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="transports" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getTransportsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfTransport"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfTransport">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:Transport"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Transport">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="name" type="xsd:string"/>
+                    <xsd:element name="weight_capacity" type="xsd:double"/>
+                    <xsd:element name="cubic_capacity" type="xsd:double"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Transport loading methods information -->
+            <xsd:element name="getTransportLoadingMethods">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="methods" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getTransportLoadingMethodsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfTransportLoadingMethod"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfTransportLoadingMethod">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:TransportLoadingMethod"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="TransportLoadingMethod">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="name" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Cities information -->
+            <xsd:element name="getCities">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="cities" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getCitiesResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfCity"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfCity">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:City"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="City">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="name" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Product scheduling techniques information -->
+            <xsd:element name="getProductSchedulingTechniques">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="products" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                        <xsd:element name="warehouses" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getProductSchedulingTechniquesResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfProductSchedulingTechnique"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfProductSchedulingTechnique">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:ProductSchedulingTechnique"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ProductSchedulingTechnique">
+                <xsd:sequence>
+                    <xsd:element name="product" type="xsd:string"/>
+                    <xsd:element name="warehouse" type="xsd:string"/>
+                    <xsd:element name="value" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Scheduling techniques information -->
+            <xsd:element name="getSchedulingTechniques">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="techniques" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getSchedulingTechniquesResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfSchedulingTechnique"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfSchedulingTechnique">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:SchedulingTechnique"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="SchedulingTechnique">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="label" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Measure units information -->
+            <xsd:element name="getMeasureUnits">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="units" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getMeasureUnitsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfMeasureUnit"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfMeasureUnit">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:MeasureUnit"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="MeasureUnit">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="label" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Pretension statuses information -->
+            <xsd:element name="getPretensionStatuses">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="statuses" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getPretensionStatusesResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfPretensionStatus"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfPretensionStatus">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:PretensionStatus"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="PretensionStatus">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="label" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Warehouses information -->
+            <xsd:element name="getWarehouses">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="warehouses" type="tns:ArrayOfString" nillable="true" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getWarehousesResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:ArrayOfWarehouse"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:complexType name="ArrayOfWarehouse">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:Warehouse"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Warehouse">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                    <xsd:element name="label" type="xsd:string"/>
+                    <xsd:element name="city" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Submit contraparty -->
+            <xsd:element name="submitContrapartyObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="name" type="xsd:string" />
+                        <xsd:element name="inn" type="xsd:string" />
+                        <xsd:element name="kpp" type="xsd:string" />
+                        <xsd:element name="okpo" type="xsd:string" />
+                        <xsd:element name="payment_account" type="xsd:string" />
+                        <xsd:element name="bik" type="xsd:string" />
+                        <xsd:element name="currency" type="xsd:string" />
+                        <xsd:element name="legal_address" type="xsd:string" />
+                        <xsd:element name="request_code" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="Contraparty">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Submit order -->
+            <xsd:element name="submitOrderObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="order_date" type="xsd:string" />
+                        <xsd:element name="contraparty" type="xsd:string" />
+                        <xsd:element name="last_name" type="xsd:string" />
+                        <xsd:element name="first_name" type="xsd:string" />
+                        <xsd:element name="middle_name" type="xsd:string" />
+                        <xsd:element name="phone" type="xsd:string" />
+                        <xsd:element name="dispatch_date" type="xsd:string" />
+                        <xsd:element name="transport" type="xsd:string" />
+                        <xsd:element name="addresses" type="tns:ArrayOfOrderAddress" />
+                        <xsd:element name="services" type="tns:ArrayOfOrderService" />
+                        <xsd:element name="request_code" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="ArrayOfOrderAddress">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:OrderAddress"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="OrderAddress">
+                <xsd:sequence>
+                    <xsd:element name="latitude" type="xsd:decimal"/>
+                    <xsd:element name="longitude" type="xsd:decimal"/>
+                    <xsd:element name="address" type="xsd:string"/>
+                    <xsd:element name="last_name" type="xsd:string"/>
+                    <xsd:element name="first_name" type="xsd:string"/>
+                    <xsd:element name="middle_name" type="xsd:string"/>
+                    <xsd:element name="phone" type="xsd:string"/>
+                    <xsd:element name="delivery_date" type="xsd:string"/>
+                    <xsd:element name="loading_method" type="xsd:string"/>
+                    <xsd:element name="items" type="tns:ArrayOfOrderItem"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfOrderItem">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:OrderItem"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="OrderItem">
+                <xsd:sequence>
+                    <xsd:element name="warehouse" type="xsd:string"/>
+                    <xsd:element name="product" type="xsd:string"/>
+                    <xsd:element name="qty" type="xsd:decimal"/>
+                    <xsd:element name="measure_unit" type="xsd:string"/>
+                    <xsd:element name="price" type="xsd:decimal"/>
+                    <xsd:element name="total" type="xsd:decimal"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfOrderService">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:OrderService"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="OrderService">
+                <xsd:sequence>
+                    <xsd:element name="service" type="xsd:string"/>
+                    <xsd:element name="qty" type="xsd:decimal"/>
+                    <xsd:element name="price" type="xsd:decimal"/>
+                    <xsd:element name="total" type="xsd:decimal"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="OrderPlanStatus">
+                <xsd:sequence>
+                    <xsd:element name="order_number" type="xsd:string"/>
+                    <xsd:element name="status" type="tns:OrderPlanStatusValue"/>
+                    <xsd:element name="vat_amount" type="xsd:decimal"/>
+                    <xsd:element name="purchase_guarantee_date" type="xsd:string"/>
+                    <xsd:element name="items" type="tns:ArrayOfOrderPlanStatusItem" minOccurs="0" nillable="true"/>
+                    <xsd:element name="services" type="tns:ArrayOfOrderPlanStatusService"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="OrderPlanStatusValue">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="planned"/>
+                    <xsd:enumeration value="not_planned"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:complexType name="ArrayOfOrderPlanStatusItem">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:OrderPlanStatusItem"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="OrderPlanStatusItem">
+                <xsd:sequence>
+                    <xsd:element name="product" type="xsd:string"/>
+                    <xsd:element name="dispatch_date" type="xsd:string"/>
+                    <xsd:element name="vat_rate" type="xsd:string"/>
+                    <xsd:element name="vat_amount" type="xsd:decimal"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfOrderPlanStatusService">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:OrderPlanStatusService"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="OrderPlanStatusService">
+                <xsd:sequence>
+                    <xsd:element name="service" type="xsd:string"/>
+                    <xsd:element name="vat_rate" type="xsd:string"/>
+                    <xsd:element name="vat_amount" type="xsd:decimal"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Submit planning department request -->
+            <xsd:element name="submitPlanningDepartmentRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="dispatch_date" type="xsd:string" />
+                        <xsd:element name="comment" type="xsd:string" />
+                        <xsd:element name="request_code" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="PlanningDepartmentAnswer">
+                <xsd:sequence>
+                    <xsd:element name="order_number" type="xsd:string"/>
+                    <xsd:element name="is_answered" type="xsd:boolean"/>
+                    <xsd:element name="items" type="tns:ArrayOfPlanningDepartmentAnswerItem" minOccurs="0" nillable="true"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfPlanningDepartmentAnswerItem">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:PlanningDepartmentAnswerItem"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="PlanningDepartmentAnswerItem">
+                <xsd:sequence>
+                    <xsd:element name="product" type="xsd:string"/>
+                    <xsd:element name="dispatch_date" type="xsd:string"/>
+                    <xsd:element name="comment" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Order purchase guarantee status -->
+            <xsd:element name="getOrderPurchaseGuaranteeStatusObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getOrderPurchaseGuaranteeStatusResponseObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="is_expired" type="xsd:boolean" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- Submit order delivery info -->
+            <xsd:element name="submitOrderDeliveryInfoObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="dispatch_date" type="xsd:string" />
+                        <xsd:element name="addresses" type="tns:ArrayOfOrderDeliveryAddress" />
+                        <xsd:element name="request_code" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="ArrayOfOrderDeliveryAddress">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="tns:OrderDeliveryAddress"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="OrderDeliveryAddress">
+                <xsd:sequence>
+                    <xsd:element name="latitude" type="xsd:decimal"/>
+                    <xsd:element name="longitude" type="xsd:decimal"/>
+                    <xsd:element name="address" type="xsd:string"/>
+                    <xsd:element name="delivery_date" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Allow order delivery -->
+            <xsd:element name="allowOrderDeliveryObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="comment" type="xsd:string" />
+                        <xsd:element name="request_code" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="OrderDeliveryAllowance">
+                <xsd:sequence>
+                    <xsd:element name="order_number" type="xsd:string" />
+                    <xsd:element name="status" type="xsd:string" />
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Submit bank transfer request -->
+            <xsd:element name="submitBankTransferOrderObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="contraparty" type="xsd:string" nillable="true" />
+                        <xsd:element name="bank_account" type="xsd:string" nillable="true" />
+                        <xsd:element name="bank_bik" type="xsd:string" nillable="true" />
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="total" type="xsd:double" />
+                        <xsd:element name="payment_number" type="xsd:string" />
+                        <xsd:element name="payment_type" type="tns:OrderPaymentType" />
+                        <xsd:element name="payment_date" type="xsd:string" />
+                        <xsd:element name="request_code" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="BankTransferOrder">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string" />
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="OrderPaymentType">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="equiring"/>
+                    <xsd:enumeration value="pd4"/>
+                    <xsd:enumeration value="cashless"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+
+            <!-- Order delivery progress -->
+            <xsd:element name="getOrderDeliveryProgressObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getOrderDeliveryProgressResponseObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="is_in_progress" type="xsd:boolean" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- Order delivery completion -->
+            <xsd:element name="getOrderDeliveryCompletionObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getOrderDeliveryCompletionResponseObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="is_delivered" type="xsd:boolean" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- Order cancellation -->
+            <xsd:element name="cancelOrderObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="request_code" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="OrderCancellation">
+                <xsd:sequence>
+                    <xsd:element name="order_number" type="xsd:string" />
+                    <xsd:element name="status" type="xsd:string" />
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Disallow order delivery -->
+            <xsd:element name="disallowOrderDeliveryObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="request_code" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="OrderDeliveryDisallowance">
+                <xsd:sequence>
+                    <xsd:element name="order_number" type="xsd:string" />
+                    <xsd:element name="status" type="xsd:string" />
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Submit outflow request -->
+            <xsd:element name="submitOutflowRequestObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="bank_account" type="xsd:string" />
+                        <xsd:element name="bank_bik" type="xsd:string" />
+                        <xsd:element name="payment_type" type="tns:OrderPaymentType" />
+                        <xsd:element name="total" type="xsd:double" />
+                        <xsd:element name="request_code" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="OutflowStatus">
+                <xsd:sequence>
+                    <xsd:element name="is_fulfilled" type="xsd:boolean" />
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Submit pretension -->
+            <xsd:element name="submitPretensionObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="order_number" type="xsd:string" />
+                        <xsd:element name="contraparty_name" type="xsd:string" />
+                        <xsd:element name="description" type="xsd:string" />
+                        <xsd:element name="files" type="tns:ArrayOfUri" />
+                        <xsd:element name="request_code" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="Pretension">
+                <xsd:sequence>
+                    <xsd:element name="order_number" type="xsd:string" />
+                    <xsd:element name="pretension" type="xsd:string" />
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Pretension status -->
+            <xsd:element name="getPretensionStatusObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="pretension" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getPretensionStatusResponseObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="pretension" type="xsd:string" />
+                        <xsd:element name="status" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <!-- Command status request -->
+            <xsd:element name="getRequestStatusObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="request_code" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getRequestStatusResponseObject">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="response" type="tns:RequestStatusResponse" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="RequestStatusResponse">
+                <xsd:sequence>
+                    <!-- Variable response -->
+                    <xsd:element name="contraparty" type="tns:Contraparty" minOccurs="0" nillable="true"/>
+                    <xsd:element name="order_plan_status" type="tns:OrderPlanStatus" minOccurs="0" nillable="true"/>
+                    <xsd:element name="planning_department_answer" type="tns:PlanningDepartmentAnswer" minOccurs="0" nillable="true"/>
+                    <xsd:element name="order_delivery_allowance" type="tns:OrderDeliveryAllowance" minOccurs="0" nillable="true" />
+                    <xsd:element name="bank_transfer_order" type="tns:BankTransferOrder" minOccurs="0" nillable="true" />
+                    <xsd:element name="order_cancellation" type="tns:OrderCancellation" minOccurs="0" nillable="true" />
+                    <xsd:element name="order_delivery_disallowance" type="tns:OrderDeliveryDisallowance" minOccurs="0" nillable="true" />
+                    <xsd:element name="outflow_status" type="tns:OutflowStatus" minOccurs="0" nillable="true" />
+                    <xsd:element name="pretension" type="tns:Pretension" minOccurs="0" nillable="true" />
+                    <xsd:element name="operation_fault" type="tns:OperationFault" minOccurs="0" nillable="true" />
+                </xsd:sequence>
+                <xsd:attribute name="state" type="tns:StatusResponseState" use="required"/>
+            </xsd:complexType>
+            <xsd:simpleType name="StatusResponseState">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="not_received"/>
+                    <xsd:enumeration value="error"/>
+                    <xsd:enumeration value="success"/>
+                    <xsd:enumeration value="expired"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+
+            <xsd:element name="submittedRequest">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="request_code" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="OperationFault">
+                <xsd:sequence>
+                    <xsd:element name="code" type="xsd:string" />
+                    <xsd:element name="description" type="xsd:string" />
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+
+    <!-- Messages -->
+    <wsdl:message name="getProductsListInputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsList"/>
+    </wsdl:message>
+    <wsdl:message name="getProductsListOutputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsListResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getProductsGroupsInputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsGroups"/>
+    </wsdl:message>
+    <wsdl:message name="getProductsGroupsOutputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsGroupsResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getProductsAttributesInputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsAttributes"/>
+    </wsdl:message>
+    <wsdl:message name="getProductsAttributesOutputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsAttributesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getProductsPricesInputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsPrices"/>
+    </wsdl:message>
+    <wsdl:message name="getProductsPricesOutputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsPricesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getChangedProductsPricesInputMessage">
+        <wsdl:part name="parameters" element="tns:getChangedProductsPrices"/>
+    </wsdl:message>
+    <wsdl:message name="getChangedProductsPricesOutputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsPricesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getProductsStockInputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsStock"/>
+    </wsdl:message>
+    <wsdl:message name="getProductsStockOutputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsStockResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getChangedProductsStockInputMessage">
+        <wsdl:part name="parameters" element="tns:getChangedProductsStock"/>
+    </wsdl:message>
+    <wsdl:message name="getChangedProductsStockOutputMessage">
+        <wsdl:part name="parameters" element="tns:getProductsStockResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getLoadingRatesInputMessage">
+        <wsdl:part name="parameters" element="tns:getLoadingRates"/>
+    </wsdl:message>
+    <wsdl:message name="getLoadingRatesOutputMessage">
+        <wsdl:part name="parameters" element="tns:getLoadingRatesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getQtyRestrictionsInputMessage">
+        <wsdl:part name="parameters" element="tns:getQtyRestrictions"/>
+    </wsdl:message>
+    <wsdl:message name="getQtyRestrictionsOutputMessage">
+        <wsdl:part name="parameters" element="tns:getQtyRestrictionsResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getTransportsInputMessage">
+        <wsdl:part name="parameters" element="tns:getTransports"/>
+    </wsdl:message>
+    <wsdl:message name="getTransportsOutputMessage">
+        <wsdl:part name="parameters" element="tns:getTransportsResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getTransportLoadingMethodsInputMessage">
+        <wsdl:part name="parameters" element="tns:getTransportLoadingMethods"/>
+    </wsdl:message>
+    <wsdl:message name="getTransportLoadingMethodsOutputMessage">
+        <wsdl:part name="parameters" element="tns:getTransportLoadingMethodsResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getCitiesInputMessage">
+        <wsdl:part name="parameters" element="tns:getCities"/>
+    </wsdl:message>
+    <wsdl:message name="getCitiesOutputMessage">
+        <wsdl:part name="parameters" element="tns:getCitiesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getProductSchedulingTechniquesInputMessage">
+        <wsdl:part name="parameters" element="tns:getProductSchedulingTechniques"/>
+    </wsdl:message>
+    <wsdl:message name="getProductSchedulingTechniquesOutputMessage">
+        <wsdl:part name="parameters" element="tns:getProductSchedulingTechniquesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getSchedulingTechniquesInputMessage">
+        <wsdl:part name="parameters" element="tns:getSchedulingTechniques"/>
+    </wsdl:message>
+    <wsdl:message name="getSchedulingTechniquesOutputMessage">
+        <wsdl:part name="parameters" element="tns:getSchedulingTechniquesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMeasureUnitsInputMessage">
+        <wsdl:part name="parameters" element="tns:getMeasureUnits"/>
+    </wsdl:message>
+    <wsdl:message name="getMeasureUnitsOutputMessage">
+        <wsdl:part name="parameters" element="tns:getMeasureUnitsResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getPretensionStatusesInputMessage">
+        <wsdl:part name="parameters" element="tns:getPretensionStatuses"/>
+    </wsdl:message>
+    <wsdl:message name="getPretensionStatusesOutputMessage">
+        <wsdl:part name="parameters" element="tns:getPretensionStatusesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getWarehousesInputMessage">
+        <wsdl:part name="parameters" element="tns:getWarehouses"/>
+    </wsdl:message>
+    <wsdl:message name="getWarehousesOutputMessage">
+        <wsdl:part name="parameters" element="tns:getWarehousesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="submitContrapartyInputMessage">
+        <wsdl:part name="parameters" element="tns:submitContrapartyObject"/>
+    </wsdl:message>
+    <wsdl:message name="submitContrapartyOutputMessage">
+        <wsdl:part name="parameters" element="tns:submittedRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="submitOrderInputMessage">
+        <wsdl:part name="parameters" element="tns:submitOrderObject"/>
+    </wsdl:message>
+    <wsdl:message name="submitOrderOutputMessage">
+        <wsdl:part name="parameters" element="tns:submittedRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="submitPlanningDepartmentRequestInputMessage">
+        <wsdl:part name="parameters" element="tns:submitPlanningDepartmentRequest"/>
+    </wsdl:message>
+    <wsdl:message name="submitPlanningDepartmentRequestOutputMessage">
+        <wsdl:part name="parameters" element="tns:submittedRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getOrderPurchaseGuaranteeStatusInputMessage">
+        <wsdl:part name="parameters" element="tns:getOrderPurchaseGuaranteeStatusObject"/>
+    </wsdl:message>
+    <wsdl:message name="getOrderPurchaseGuaranteeStatusOutputMessage">
+        <wsdl:part name="parameters" element="tns:getOrderPurchaseGuaranteeStatusResponseObject"/>
+    </wsdl:message>
+
+    <wsdl:message name="submitOrderDeliveryInfoInputMessage">
+        <wsdl:part name="parameters" element="tns:submitOrderDeliveryInfoObject"/>
+    </wsdl:message>
+    <wsdl:message name="submitOrderDeliveryInfoOutputMessage">
+        <wsdl:part name="parameters" element="tns:submittedRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="allowOrderDeliveryInputMessage">
+        <wsdl:part name="parameters" element="tns:allowOrderDeliveryObject"/>
+    </wsdl:message>
+    <wsdl:message name="allowOrderDeliveryOutputMessage">
+        <wsdl:part name="parameters" element="tns:submittedRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="submitBankTransferOrderInputMessage">
+        <wsdl:part name="parameters" element="tns:submitBankTransferOrderObject"/>
+    </wsdl:message>
+    <wsdl:message name="submitBankTransferOrderOutputMessage">
+        <wsdl:part name="parameters" element="tns:submittedRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getOrderDeliveryProgressInputMessage">
+        <wsdl:part name="parameters" element="tns:getOrderDeliveryProgressObject"/>
+    </wsdl:message>
+    <wsdl:message name="getOrderDeliveryProgressOutputMessage">
+        <wsdl:part name="parameters" element="tns:getOrderDeliveryProgressResponseObject"/>
+    </wsdl:message>
+
+    <wsdl:message name="getOrderDeliveryCompletionInputMessage">
+        <wsdl:part name="parameters" element="tns:getOrderDeliveryCompletionObject"/>
+    </wsdl:message>
+    <wsdl:message name="getOrderDeliveryCompletionOutputMessage">
+        <wsdl:part name="parameters" element="tns:getOrderDeliveryCompletionResponseObject"/>
+    </wsdl:message>
+
+    <wsdl:message name="cancelOrderInputMessage">
+        <wsdl:part name="parameters" element="tns:cancelOrderObject"/>
+    </wsdl:message>
+    <wsdl:message name="cancelOrderOutputMessage">
+        <wsdl:part name="parameters" element="tns:submittedRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="disallowOrderDeliveryInputMessage">
+        <wsdl:part name="parameters" element="tns:disallowOrderDeliveryObject"/>
+    </wsdl:message>
+    <wsdl:message name="disallowOrderDeliveryOutputMessage">
+        <wsdl:part name="parameters" element="tns:submittedRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="submitOutflowRequestInputMessage">
+        <wsdl:part name="parameters" element="tns:submitOutflowRequestObject"/>
+    </wsdl:message>
+    <wsdl:message name="submitOutflowRequestOutputMessage">
+        <wsdl:part name="parameters" element="tns:submittedRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="submitPretensionInputMessage">
+        <wsdl:part name="parameters" element="tns:submitPretensionObject"/>
+    </wsdl:message>
+    <wsdl:message name="submitPretensionOutputMessage">
+        <wsdl:part name="parameters" element="tns:submittedRequest"/>
+    </wsdl:message>
+
+    <wsdl:message name="getPretensionStatusInputMessage">
+        <wsdl:part name="parameters" element="tns:getPretensionStatusObject"/>
+    </wsdl:message>
+    <wsdl:message name="getPretensionStatusOutputMessage">
+        <wsdl:part name="parameters" element="tns:getPretensionStatusResponseObject"/>
+    </wsdl:message>
+
+    <wsdl:message name="getRequestStatusInputMessage">
+        <wsdl:part name="parameters" element="tns:getRequestStatusObject"/>
+    </wsdl:message>
+    <wsdl:message name="getRequestStatusOutputMessage">
+        <wsdl:part name="parameters" element="tns:getRequestStatusResponseObject"/>
+    </wsdl:message>
+
+    <wsdl:message name="serviceAuth">
+        <wsdl:part name="parameters" element="tns:serviceAuth"/>
+    </wsdl:message>
+
+    <!-- Port type -->
+    <wsdl:portType name="TNWebServicePort">
+        <wsdl:documentation>TN 1C Web Service for E-Commerce</wsdl:documentation>
+        <wsdl:operation name="getProductsList">
+            <wsdl:input message="tns:getProductsListInputMessage"/>
+            <wsdl:output message="tns:getProductsListOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProductsGroups">
+            <wsdl:input message="tns:getProductsGroupsInputMessage"/>
+            <wsdl:output message="tns:getProductsGroupsOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProductsAttributes">
+            <wsdl:input message="tns:getProductsAttributesInputMessage"/>
+            <wsdl:output message="tns:getProductsAttributesOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProductsPrices">
+            <wsdl:input message="tns:getProductsPricesInputMessage"/>
+            <wsdl:output message="tns:getProductsPricesOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getChangedProductsPrices">
+            <wsdl:input message="tns:getChangedProductsPricesInputMessage"/>
+            <wsdl:output message="tns:getChangedProductsPricesOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProductsStock">
+            <wsdl:input message="tns:getProductsStockInputMessage"/>
+            <wsdl:output message="tns:getProductsStockOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getChangedProductsStock">
+            <wsdl:input message="tns:getChangedProductsStockInputMessage"/>
+            <wsdl:output message="tns:getChangedProductsStockOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getLoadingRates">
+            <wsdl:input message="tns:getLoadingRatesInputMessage"/>
+            <wsdl:output message="tns:getLoadingRatesOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getQtyRestrictions">
+            <wsdl:input message="tns:getQtyRestrictionsInputMessage"/>
+            <wsdl:output message="tns:getQtyRestrictionsOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getTransports">
+            <wsdl:input message="tns:getTransportsInputMessage"/>
+            <wsdl:output message="tns:getTransportsOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getTransportLoadingMethods">
+            <wsdl:input message="tns:getTransportLoadingMethodsInputMessage"/>
+            <wsdl:output message="tns:getTransportLoadingMethodsOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getCities">
+            <wsdl:input message="tns:getCitiesInputMessage"/>
+            <wsdl:output message="tns:getCitiesOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProductSchedulingTechniques">
+            <wsdl:input message="tns:getProductSchedulingTechniquesInputMessage"/>
+            <wsdl:output message="tns:getProductSchedulingTechniquesOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getSchedulingTechniques">
+            <wsdl:input message="tns:getSchedulingTechniquesInputMessage"/>
+            <wsdl:output message="tns:getSchedulingTechniquesOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMeasureUnits">
+            <wsdl:input message="tns:getMeasureUnitsInputMessage"/>
+            <wsdl:output message="tns:getMeasureUnitsOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getPretensionStatuses">
+            <wsdl:input message="tns:getPretensionStatusesInputMessage"/>
+            <wsdl:output message="tns:getPretensionStatusesOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getWarehouses">
+            <wsdl:input message="tns:getWarehousesInputMessage"/>
+            <wsdl:output message="tns:getWarehousesOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitContraparty">
+            <wsdl:input message="tns:submitContrapartyInputMessage"/>
+            <wsdl:output message="tns:submitContrapartyOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitOrder">
+            <wsdl:input message="tns:submitOrderInputMessage"/>
+            <wsdl:output message="tns:submitOrderOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitPlanningDepartmentRequest">
+            <wsdl:input message="tns:submitPlanningDepartmentRequestInputMessage"/>
+            <wsdl:output message="tns:submitPlanningDepartmentRequestOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getOrderPurchaseGuaranteeStatus">
+            <wsdl:input message="tns:getOrderPurchaseGuaranteeStatusInputMessage"/>
+            <wsdl:output message="tns:getOrderPurchaseGuaranteeStatusOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitOrderDeliveryInfo">
+            <wsdl:input message="tns:submitOrderDeliveryInfoInputMessage"/>
+            <wsdl:output message="tns:submitOrderDeliveryInfoOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="allowOrderDelivery">
+            <wsdl:input message="tns:allowOrderDeliveryInputMessage"/>
+            <wsdl:output message="tns:allowOrderDeliveryOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitBankTransferOrder">
+            <wsdl:input message="tns:submitBankTransferOrderInputMessage"/>
+            <wsdl:output message="tns:submitBankTransferOrderOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getOrderDeliveryProgress">
+            <wsdl:input message="tns:getOrderDeliveryProgressInputMessage"/>
+            <wsdl:output message="tns:getOrderDeliveryProgressOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getOrderDeliveryCompletion">
+            <wsdl:input message="tns:getOrderDeliveryCompletionInputMessage"/>
+            <wsdl:output message="tns:getOrderDeliveryCompletionOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="cancelOrder">
+            <wsdl:input message="tns:cancelOrderInputMessage"/>
+            <wsdl:output message="tns:cancelOrderOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="disallowOrderDelivery">
+            <wsdl:input message="tns:disallowOrderDeliveryInputMessage"/>
+            <wsdl:output message="tns:disallowOrderDeliveryOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitOutflowRequest">
+            <wsdl:input message="tns:submitOutflowRequestInputMessage"/>
+            <wsdl:output message="tns:submitOutflowRequestOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitPretension">
+            <wsdl:input message="tns:submitPretensionInputMessage"/>
+            <wsdl:output message="tns:submitPretensionOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getPretensionStatus">
+            <wsdl:input message="tns:getPretensionStatusInputMessage"/>
+            <wsdl:output message="tns:getPretensionStatusOutputMessage"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="getRequestStatus">
+            <wsdl:input message="tns:getRequestStatusInputMessage"/>
+            <wsdl:output message="tns:getRequestStatusOutputMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- Bindings -->
+    <wsdl:binding name="TNWebServiceBinding" type="tns:TNWebServicePort">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getProductsList">
+            <soap:operation soapAction="urn:actions/getProductsList"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProductsGroups">
+            <soap:operation soapAction="urn:actions/getProductsGroups"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProductsAttributes">
+            <soap:operation soapAction="urn:actions/getProductsAttributes"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProductsPrices">
+            <soap:operation soapAction="urn:actions/getProductsPrices"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getChangedProductsPrices">
+            <soap:operation soapAction="urn:actions/getChangedProductsPrices"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProductsStock">
+            <soap:operation soapAction="urn:actions/getProductsStock"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getChangedProductsStock">
+            <soap:operation soapAction="urn:actions/getChangedProductsStock"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getLoadingRates">
+            <soap:operation soapAction="urn:actions/getLoadingRates"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getQtyRestrictions">
+            <soap:operation soapAction="urn:actions/getQtyRestrictions"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getTransports">
+            <soap:operation soapAction="urn:actions/getTransports"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getTransportLoadingMethods">
+            <soap:operation soapAction="urn:actions/getTransportLoadingMethods"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getCities">
+            <soap:operation soapAction="urn:actions/getCities"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getProductSchedulingTechniques">
+            <soap:operation soapAction="urn:actions/getProductSchedulingTechniques"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getSchedulingTechniques">
+            <soap:operation soapAction="urn:actions/getSchedulingTechniques"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getMeasureUnits">
+            <soap:operation soapAction="urn:actions/getMeasureUnits"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getPretensionStatuses">
+            <soap:operation soapAction="urn:actions/getPretensionStatuses"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getWarehouses">
+            <soap:operation soapAction="urn:actions/getWarehouses"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitContraparty">
+            <soap:operation soapAction="urn:actions/submitContraparty"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitOrder">
+            <soap:operation soapAction="urn:actions/submitOrder"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitPlanningDepartmentRequest">
+            <soap:operation soapAction="urn:actions/submitPlanningDepartmentRequest"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getOrderPurchaseGuaranteeStatus">
+            <soap:operation soapAction="urn:actions/getOrderPurchaseGuaranteeStatus"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitOrderDeliveryInfo">
+            <soap:operation soapAction="urn:actions/submitOrderDeliveryInfo"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="allowOrderDelivery">
+            <soap:operation soapAction="urn:actions/allowOrderDelivery"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitBankTransferOrder">
+            <soap:operation soapAction="urn:actions/submitBankTransferOrder"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getOrderDeliveryProgress">
+            <soap:operation soapAction="urn:actions/getOrderDeliveryProgress"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getOrderDeliveryCompletion">
+            <soap:operation soapAction="urn:actions/getOrderDeliveryCompletion"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="cancelOrder">
+            <soap:operation soapAction="urn:actions/cancelOrder"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="disallowOrderDelivery">
+            <soap:operation soapAction="urn:actions/disallowOrderDelivery"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitOutflowRequest">
+            <soap:operation soapAction="urn:actions/submitOutflowRequest"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="submitPretension">
+            <soap:operation soapAction="urn:actions/submitPretension"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getPretensionStatus">
+            <soap:operation soapAction="urn:actions/getPretensionStatus"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="getRequestStatus">
+            <soap:operation soapAction="urn:actions/getRequestStatus"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+                <soap:header message="tns:serviceAuth" part="parameters" use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="TNWebService">
+        <wsdl:port name="TNWebServicePort" binding="tns:TNWebServiceBinding">
+            <soap:address location="http://localhost/tnwebservice"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
