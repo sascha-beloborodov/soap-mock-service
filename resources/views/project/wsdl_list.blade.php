@@ -18,32 +18,53 @@
                     </div>
                 </div>
                 @foreach ($data as $wsdlOperation)
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{$wsdlOperation['response']}}<br>
-                            {{$wsdlOperation['request']}}<br>
-                            {{$wsdlOperation['similar_entity']}}
+                    <div class="row item">
+                        <div class="row wsdl-info">
+                            <div class="col-md-6">
+                                <div>
+                                    <b>Response:</b>
+                                    <span class="name-response">{{$wsdlOperation['response']}}</span>
+                                </div>
+                                <br>
+                                <div>
+                                    <b>Request (with params):</b>
+                                    <span class="name-request-with-params">{{$wsdlOperation['request']}}</span>
+                                </div>
+                                <br>
+                                <div>
+                                    <b>SOAP method:</b>
+                                    <span class="soap-method">{{$wsdlOperation['request_operation']}}</span>
+                                </div>
+                                <br>
+                                <div>
+                                    <b>Entity:</b>
+                                    <span class="entity">{{$wsdlOperation['similar_entity']}}</span>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6 entity-area">
+                                {{$wsdlOperation['entity_instance']}}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            {{var_dump($wsdlOperation['entity_instance'])}}
+                        <div class="row wsdl-address">
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" placeholder="Service address" name="address_service" id="address_service">
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <input class="form-control" type="text" placeholder="Service address" name="address_service" id="address_service">
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <button class="btn btn-primary">
-                                Get response
-                            </button>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button class="btn btn-primary"@if(is_null($wsdlOperation['entity_instance'])) disabled @endif>
+                                    Get response
+                                </button>
+                            </div>
+                            @if (is_null($wsdlOperation['entity_instance']))
+                                <div class="col-md-6">
+                                    <button class="btn btn-primary js-create-entity" id="{{$wsdlOperation['response']}}">
+                                        Create Entity
+                                    </button>
+                                </div>
+                            @endif
                         </div>
-                        @if (is_null($wsdlOperation['entity_instance']))
-                        <div class="col-md-3">
-                            <button class="btn btn-primary">
-                                Create Entity
-                            </button>
-                        </div>
-                        @endif
                     </div>
                     <hr>
                 @endforeach

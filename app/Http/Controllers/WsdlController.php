@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Storage;
+use JMS\Serializer\SerializerBuilder;
 use Zend\Soap\Client;
 
 class WsdlController extends Controller
@@ -44,6 +45,8 @@ class WsdlController extends Controller
         
         $this->setCapital();
 
+        $serializer = SerializerBuilder::create()->build();
+
         $object = null;
         foreach ($actions as $action) {
             $req = explode(' ', $action, 2);
@@ -62,12 +65,11 @@ class WsdlController extends Controller
             $subData = [
                 'response' => $req[0],
                 'request' => $req[1],
+                'request_operation' => $this->getRequestOperation($req[1]),
                 'similar_entity' => $entity,
-                'entity_instance' => $object,
-//                'serialize_instance' => json_decode($object),
+                'entity_instance' => is_null($object) ? null : $serializer->serialize($object, 'json'),
             ];
 
-            var_dump(json_encode($object));
             $object = null;
             $data[] = $subData;
         }
@@ -78,12 +80,11 @@ class WsdlController extends Controller
     public function setCapital()
     {
         $i = 'A';
-        $arr = [];
+        $this->capital = [];
         for (;$i <= 'Z'; $i++) {
             if (strlen($i) > 1) break;
-            $arr[] = $i;
+            $this->capital[] = $i;
         }
-        $this->capital = $arr;
     }
 
     public function getFormatStructs(array $structs)
@@ -117,7 +118,10 @@ class WsdlController extends Controller
 
     public function getFormatEntity($req) 
     {
-        $newRes = substr($req[0], 3);
+        $newRes = $req[0];
+        if (substr($newRes, 0, 3) == 'get') {
+            $newRes = substr($req[0], 3);
+        }
         $newRes = substr($newRes, 0, strlen($newRes) - 8);
         if ($newRes[strlen($newRes) - 1] == 's') {
             $newRes = substr($newRes, 0, strlen($newRes) - 1);
@@ -163,5 +167,10 @@ class WsdlController extends Controller
             }
         }
         return $result;
+    }
+
+    public function getRequestOperation($request)
+    {
+        return explode('(', $request)[0];
     }
 }
