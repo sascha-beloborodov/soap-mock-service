@@ -23,7 +23,7 @@ class WsdlController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index($id, Request $request)
     {
         $user = Auth::user();
         $project = Project::where('id', (int) $id)->first();
@@ -74,7 +74,9 @@ class WsdlController extends Controller
             $data[] = $subData;
         }
 
-        return view('project.wsdl_list')->with('data', $data);
+        return view('project.wsdl_list')
+            ->with('data', $data)
+            ->with('project_id', $request->segment(2));
     }
     
     public function setCapital()

@@ -46,15 +46,18 @@ var controller = {
         '<span class="js-close-entity-area label label-danger">close</span>' +
         '<label for="">Entity name:</label><input type="text" class="form-control new-entity-name" value="">',
     templateEntityProperty :
-                '<li><div class="col-md-4"><label for="">Property type:</label>' +
+                '<li><div class="col-md-3"><label for="">Property type:</label>' +
                 '<select class="form-control type-of-entity-property" id=""><!options!></select></div>' +
-                '<div class="col-md-7"><label for="">Property name:</label>' +
-                '<input type="text" class="form-control new-entity-property" value=""></div>' +
+                '<div class="col-md-4"><label for="">Property name:</label>' +
+                '<input type="text" class="form-control new-entity-property-name" value=""></div>' +
+                '<div class="col-md-4"><label for="">Property value:</label>' +
+                '<input type="text" class="form-control new-entity-property-value" value=""></div>' +
                 '<div class="col-md-1"><span class="js-remove-property" style="cursor: pointer;">X</span></div></li>',
     templateTypesOptions: null,
     templateButton: '<button class="btn btn-success js-add-property">Add</button>',
     item: null,
     editing: false,
+    data: null,
     getCreateEntityForm: function (e, item) {
         this.item = item;
         this.editing = true;
@@ -93,21 +96,71 @@ var controller = {
     },
     changeStateButton: function () {
         var createEntityButton = $('.'+CREATE_ENTITY_BUTTON_CLASS);
-        this.editing ?
-            createEntityButton.hide() :
-            createEntityButton.show()
+        if (this.editing) {
+            createEntityButton.hide();
+        } else {
+            createEntityButton.show();
+        }
     },
     getResponse: function (cb) {
+        var that = this;
         $.ajax({
-            url: "script.php",
+            url: "/wsdl/getresponse",
             method: "POST",
-            data: { id : 3 },
-            dataType: "json",
-            success: function () {
-
+            data: that.data,
+            dataType: "xml",
+            success: function (data, status, xhr) {
+                cb(data);
             },
-
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
         });
+    },
+    prepareData: function (parentEl) {
+        var parentEl = $(parentEl);
+        var properties = undefined;
+        try {
+            properties = $.parseJSON(parentEl.find('.'+ENTITY_AREA).text());
+            for (var prop in properties) {
+                if (typeof properties[prop] == 'object') {
+                    properties[prop] = 'some property';
+                }
+                var x = 0;
+            }
+        }
+        catch (e) {
+            //nothing
+        }
+
+        var that = this;
+
+        this.data = {
+            entityName: null,
+            soapMethod: null,
+            properties: []
+
+        };
+
+        if (typeof properties === 'object') {
+            this.data.entityName = parentEl.find('.entity').text();
+            this.data.soapMethod = parentEl.find('.soap-method').text();
+            this.data.properties = properties;
+        }
+        else {
+            this.data.entityName = parentEl.find('.new-entity-name').val();
+            this.data.soapMethod = parentEl.find('.soap-method').text();
+            parentEl.find('ul.properties-list li').each(function (index, el) {
+                that.data.properties.push({
+                    type: $(el).find('.type-of-entity-property').val(),
+                    name: $(el).find('.new-entity-property-name').val(),
+                    value: $(el).find('.new-entity-property-value').val()
+                });
+            });
+        }
+        this.data._token = $('#csrf-token').val();
+        this.data.project_id = $('#project_id').val();
+        return this;
     }
 };
 
@@ -140,4 +193,20 @@ $(function() {
         var parentEl = $(e.target).parents('.' + ENTITY_AREA)[0];
         controller.closeEntityArea(parentEl).changeStateButton();
     });
+
+    $(document).on('click', '.js-get-response', function (e) {
+        var parentEl = $(e.target).parents('.item')[0];
+        controller.prepareData(parentEl).getResponse(function (data) {
+
+            var xmlcontent = $('#xml-response').html(data.childNodes[0].innerHTML);
+            var content = $('#xml-response').text();
+
+            // var parser = new DOMParser();
+            // var doc = parser.parseFromString(xmlcontent, "application/xml");
+
+            $(parentEl)
+                .find('.result-response pre code')
+                .text(content.toString());
+        });
+    })
 });

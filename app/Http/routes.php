@@ -44,5 +44,5 @@ Route::post('projects/store', 'ProjectController@store')->name('projects');
 
 Route::get('projects/{id}/wsdl', 'WsdlController@index');
 
-Route::get('wsdl/getresponse', 'WsdlAjaxController@getSoapResponse');
+Route::post('wsdl/getresponse', 'WsdlAjaxController@getSoapResponse');
 
