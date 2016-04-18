@@ -31,7 +31,6 @@ class ProjectController extends Controller
     public function create()
     {
         $this->middleware('auth');
-
         return view('project.add');
     }
 
@@ -50,10 +49,11 @@ class ProjectController extends Controller
 
         $storage = Storage::getFacadeApplication();
         $path = $storage->basePath();
-        $pathToUserDir = $path . '/storage/wsdl/' . $user->id;
+        $dirName = hash('adler32', time() + mt_rand(0, pow(10, 5)));
+        $pathToUserDir = $path . '/storage/wsdl/' . $user->id . '/' . $dirName;
 
         if (!is_dir($pathToUserDir)) {
-            mkdir($pathToUserDir);
+            mkdir($pathToUserDir, 0777, true);
         }
 
         $file = $request->file('wsdl_file');
@@ -77,6 +77,7 @@ class ProjectController extends Controller
             $project->wsdl_name = $request->wsdl_name;
             $project->wsdl_path = $pathToUserDir;
             $project->user_id = $user->id;
+            $project->dir_name = $dirName;
 
             $generator = new \Wsdl2PhpGenerator\Generator();
             $generator->generate(
@@ -115,7 +116,7 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
-        //
+        $this->middleware('auth');
     }
 
     /**

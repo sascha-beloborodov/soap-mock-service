@@ -114,6 +114,11 @@ var controller = {
             },
             error: function (xhr, status, error) {
                 console.log(error);
+                var jsonResponseText = $.parseJSON(xhr.responseText);
+                if (jsonResponseText.error.message) {
+                    alert(jsonResponseText.error.message);
+                }
+
             }
         });
     },
@@ -197,6 +202,11 @@ $(function() {
     $(document).on('click', '.js-get-response', function (e) {
         var parentEl = $(e.target).parents('.item')[0];
         controller.prepareData(parentEl).getResponse(function (data) {
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
 
             var xmlcontent = $('#xml-response').html(data.childNodes[0].innerHTML);
             var content = $('#xml-response').text();

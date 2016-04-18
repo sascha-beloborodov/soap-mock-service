@@ -20,9 +20,9 @@ Route::auth();
 Route::get('/home', 'HomeController@index');
 
 
-Route::get('wsdl/{path}/{filename}', function ($dir, $filename)
+Route::get('wsdl/{path}/{project_dir}/{filename}', function ($dir, $projectDir, $filename)
 {
-    $path = storage_path() . '/wsdl/' . $dir . '/' . $filename;
+    $path = storage_path() . '/wsdl/' . $dir . '/' . $projectDir . '/' . $filename;
 
     $file = File::get($path);
     $type = File::mimeType($path);
@@ -32,6 +32,7 @@ Route::get('wsdl/{path}/{filename}', function ($dir, $filename)
 
     return $response;
 });
+
 
 //Route::post('projects', 'ItemController@store')->name('items');
 //Route::get('projects/{id}/edit', 'ItemController@edit')->name('items');

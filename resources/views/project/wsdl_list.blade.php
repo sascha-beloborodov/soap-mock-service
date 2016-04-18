@@ -14,7 +14,7 @@
             <div class="col-md-10 col-md-offset-1">
                 <div class="row">
                     <div class="col-md-5">
-
+                        Info
                     </div>
                     <div class="col-md-7">
                         Entity instance
@@ -46,7 +46,11 @@
 
                             </div>
                             <div class="col-md-7 entity-area">
-                                {{$wsdlOperation['entity_instance']}}
+                                @if($wsdlOperation['entity_instance'])
+                                    {{$wsdlOperation['entity_instance']}}
+                                @else
+                                    No entity!!!
+                                @endif
                             </div>
                         </div>
                         <div class="row wsdl-address">

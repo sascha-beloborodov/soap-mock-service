@@ -23,12 +23,16 @@ class WsdlAjaxController extends Controller {
         $projectId = $request->project_id;
         $user = Auth::user();
         $project = Project::where('id', (int) $projectId)->first();
-        $wsdlUrl = 'http://wsdl-client.loc/wsdl' . '/' .$user->id . '/' . $project->wsdl_name;
+        $wsdlUrl = 'http://wsdl-client.loc/wsdl' .
+            '/' . $user->id .
+            '/' . $project->dir_name .
+            '/' . $project->wsdl_name;
 
         $storage = Storage::getFacadeApplication();
         $path = $storage->basePath();
         $pathToUserDir = $path . '/storage/wsdl/' . $user->id;
-        include $pathToUserDir . '/autoload.php';
+        $pathToProject = $project->dir_name;
+        include $pathToUserDir . '/' . $pathToProject . '/autoload.php';
 
         $properties = (object) $request->properties;
         $params = null;
@@ -38,8 +42,21 @@ class WsdlAjaxController extends Controller {
         else {
             $params = $this->createPropertiesFromArray($request->properties);
         }
-        $reflection = new \ReflectionClass($request->entityName);
-        $instance = $reflection->newInstanceArgs($params);
+
+
+        try {
+            $reflection = new \ReflectionClass($request->entityName);
+            $instance = $reflection->newInstanceArgs($params);
+        }
+        catch (\Exception $e) {
+            return response()->json(
+                ['error' => [
+                        'message' => $e->getMessage()
+                    ]
+                ]
+            );
+        }
+
 
 
         $serverUrl = "http://wsdl.loc/";
@@ -50,10 +67,13 @@ class WsdlAjaxController extends Controller {
             'location' => "$serverUrl?wsdl_url=$wsdlUrl&".
                 "entity_name={$request->entityName}&".
                 "instance=$serializedEntity&".
-                "XDEBUG_SESSION_START=11769",
+                "user_id={$user->id}&".
+                "wsdl_name={$project->wsdl_name}&".
+                "dir_name={$project->dir_name}&".
+                "XDEBUG_SESSION_START=19650",
 
             'uri' => "$serverUrl?wsdl_url=$wsdlUrl&".
-                "XDEBUG_SESSION_START=11769"
+                "XDEBUG_SESSION_START=19650"
         ]);
 
         $soapMethod = $request->soapMethod;

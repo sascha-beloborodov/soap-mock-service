@@ -6,7 +6,7 @@
             <div class="col-md-10 col-md-offset-1">
                 List of projects
                 <br>
-                <a href="{{ url('/project/create') }}">Add project</a>
+                <a href="{{ url('/projects/create') }}">Add project</a>
             </div>
         </div>
         <div class="row">

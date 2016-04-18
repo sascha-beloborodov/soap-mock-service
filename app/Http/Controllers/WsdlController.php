@@ -32,7 +32,8 @@ class WsdlController extends Controller
             return redirect('/home');
         }
 
-        $wsdlUrl = 'http://wsdl-client.loc/wsdl' . '/' .$user->id . '/' . $project->wsdl_name;
+        $wsdlUrl = 'http://wsdl-client.loc/wsdl' . '/' .
+            $user->id . '/' . $project->dir_name . '/' . $project->wsdl_name;
         $soap = new \SoapClient($wsdlUrl);
         $actions = $soap->__getFunctions();
         $types = $soap->__getTypes();
@@ -41,7 +42,8 @@ class WsdlController extends Controller
         $storage = Storage::getFacadeApplication();
         $path = $storage->basePath();
         $pathToUserDir = $path . '/storage/wsdl/' . $user->id;
-        include $pathToUserDir . '/autoload.php';
+        $pathToProject = $project->dir_name;
+        include $pathToUserDir . '/' .$pathToProject . '/autoload.php';
         
         $this->setCapital();
 
