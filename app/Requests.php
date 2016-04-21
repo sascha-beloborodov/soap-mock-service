@@ -1,5 +1,4 @@
 <?php
-<?php
 
 namespace App;
 
@@ -9,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class Requests extends Model
 {
     protected $fillable = [
-        'name', 'wsdl_name', 'wsdl_path', 'user_id',
+        'body', 'soap_action', 'service', 'time', 'project_id', 'resolved',
     ];
 
 }

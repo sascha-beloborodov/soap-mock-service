@@ -48,3 +48,5 @@ Route::get('projects/{id}/wsdl', 'WsdlController@index');
 Route::post('wsdl/getresponse', 'WsdlAjaxController@getSoapResponse');
 
 Route::post('soap', 'SoapServerController@index');
+
+Route::get('requests', 'RequestsController@index');
