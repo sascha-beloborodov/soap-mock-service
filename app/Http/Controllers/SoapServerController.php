@@ -7,26 +7,44 @@
  */
 namespace App\Http\Controllers;
 
+use App\Project;
 use App\Services\SoapService;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Zend\Soap\Server;
 
 class SoapServerController extends Controller {
 
+    const ATTEMPTS = 20;
+
+    public $header;
+    public $body;
+
+    public $time;
+    public $serviceName;
+    public $requestCode;
+    public $soapAction;
+
     public function index(Request $request)
     {
-        $header = $request->header();
-        $body = $request->getContent();
+        $this->header = $request->header();
+        $this->body = $request->getContent();
 
-        Log::info($body);
+        Log::info($this->body);
 
-        $time = time();
-        $serviceName = $this->getSoapService($body);
-        $requestCode = $this->getRequestCode($body, $serviceName);
+        $this->time = time();
+        $this->serviceName = $this->getSoapService($this->body);
+        $this->requestCode = $this->getRequestCode($this->body, $this->serviceName);
+        $this->soapAction = $this->getSoapAction($this->header);
 
-        $server = new Server(null, [
+        if (strtolower($this->soapAction) == 'getrequeststatus') {
+            $this->handleForResponse();
+            exit();
+        }
+
+        $server = new Server('http://wsdl-client.loc/wsdl/2/a847410f060dec8270a8eabf242cf45b/web-service-1-4.wsdl', [
             'uri' => 'http://wsdl-client.loc/soap'
         ]);
 
@@ -36,12 +54,12 @@ class SoapServerController extends Controller {
 //        $server->handle($body);
         $server->setReturnResponse(true);
 
-        $service->setRequestCode($requestCode);
+        $service->setRequestCode($this->requestCode);
 
-        $response = $server->handle($body);
+        $response = $server->handle(/*$this->body*/);
         
         Log::info($response);
-        
+
         echo $response;
 //        exit();
         
@@ -54,12 +72,71 @@ class SoapServerController extends Controller {
 //        var_dump($root);
 //
         $soapRequest = new \App\Requests();
-        $soapRequest->body = $body;
-        $soapRequest->soap_action = $this->getSoapAction($header);
-        $soapRequest->time = $time;
-        $soapRequest->service = $serviceName;
-        $soapRequest->request_code = $requestCode;
+        $soapRequest->body = $this->body;
+        $soapRequest->soap_action = $this->soapAction;
+        $soapRequest->time = $this->time;
+        $soapRequest->service = $this->serviceName;
+        $soapRequest->request_code = $this->requestCode;
         $soapRequest->save();
+        exit();
+    }
+
+    public function handleForResponse() {
+        $counter = 0;
+        while (true) {
+            $responseModel = \App\Responses::where('request_code', (int) $this->requestCode)->first();
+            if ($responseModel || $counter < self::ATTEMPTS) {
+                break;
+            }
+            $counter++;
+            sleep(5);
+        }
+
+        $projectModel = Project::where('id', (int) $responseModel->project_id)->first();
+
+
+        $storage = Storage::getFacadeApplication();
+        $path = $storage->basePath();
+        $pathToUserDir = $path . '/storage/wsdl/' . $projectModel->user_id;
+        $pathToProject = $projectModel->dir_name;
+        include $pathToUserDir . '/' .$pathToProject . '/autoload.php';
+
+
+
+        $server = new Server('http://wsdl-client.loc/wsdl/2/a847410f060dec8270a8eabf242cf45b/web-service-1-4.wsdl', [
+            'uri' => 'http://wsdl-client.loc/soap'
+        ]);
+
+//        $reflector = new \ReflectionClass($responseModel->response_object);
+//        $reflectorObject = $reflector->newInstanceWithoutConstructor();
+
+        $reflector = new \ReflectionClass('RequestStatusResponse');
+        $reflectorObject = $reflector->newInstanceWithoutConstructor();
+
+        $reflectorProp = new \ReflectionClass($responseModel->response_object);
+        $reflectorPropObject = $reflectorProp->newInstanceWithoutConstructor();
+
+        $reflectorPropState = new \ReflectionClass('StatusResponseState');
+        $reflectorPropObjectState = $reflectorPropState->newInstanceWithoutConstructor();
+
+        $reflectorObject->setOrder_delivery_allowance($reflectorPropObject);
+        
+        $service = new SoapService();
+        $server->setClass($service);
+//        $server->handle($body);
+        $server->setReturnResponse(true);
+
+        $service->setRequestCode($this->requestCode);
+        $service->setResponseObject($reflectorObject);
+        $service->setResponsePropertyObject($reflectorPropObject);
+        $service->setResponsePropertyObjectState($reflectorPropObjectState);
+
+//        $server->handle();
+        $response = $server->handle(/*$this->body*/);
+//
+        Log::info($response);
+//
+        echo $response;
         exit();
     }
 
@@ -68,7 +145,8 @@ class SoapServerController extends Controller {
         if (!is_array($header) || empty($header['soapaction'])) {
             return '';
         }
-        return explode('/', $header['soapaction'][0])[1];
+        $action = explode('/', $header['soapaction'][0])[1];
+        return str_replace('"', '', $action);
     }
 
     private function getSoapService($soapBody)

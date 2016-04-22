@@ -50,3 +50,5 @@ Route::post('wsdl/getresponse', 'WsdlAjaxController@getSoapResponse');
 Route::post('soap', 'SoapServerController@index');
 
 Route::get('requests', 'RequestsController@index');
+Route::get('requests/{id}/edit', 'RequestsController@edit');
+Route::post('requests/{id}/edit', 'RequestsController@update');

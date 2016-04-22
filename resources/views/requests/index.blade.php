@@ -29,9 +29,7 @@
                             <td>{{$request->body}}</td>
                             <td>{{$request->time}}</td>
                             <td>
-                                <a href="{{url('/projects/'.$request->id.'/edit')}}">Edit</a><br>
-                                <a href="">Delete</a><br>
-                                <a href="{{url('/projects/'.$request->id.'/wsdl')}}">Go to advanture</a>
+                                <a href="{{url('/requests/'.$request->id.'/edit')}}">Edit</a><br>
                             </td>
                         </tr>
                     @endforeach
