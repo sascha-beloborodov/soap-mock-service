@@ -113,14 +113,18 @@ class SoapServerController extends Controller {
         $reflector = new \ReflectionClass('RequestStatusResponse');
         $reflectorObject = $reflector->newInstanceWithoutConstructor();
 
+
+        $args = json_decode($responseModel->response_value, true);
         $reflectorProp = new \ReflectionClass($responseModel->response_object);
-        $reflectorPropObject = $reflectorProp->newInstanceWithoutConstructor();
+        $reflectorPropObject = $reflectorProp->newInstanceArgs($args);
 
         $reflectorPropState = new \ReflectionClass('StatusResponseState');
         $reflectorPropObjectState = $reflectorPropState->newInstanceWithoutConstructor();
 
-        $reflectorObject->setOrder_delivery_allowance($reflectorPropObject);
-        
+        $method = "set" . ucfirst(strtolower(preg_replace('/\B([A-Z])/', '_$1', $responseModel->response_object)));
+
+        $reflectorObject->$method($reflectorPropObject);
+
         $service = new SoapService();
         $server->setClass($service);
 //        $server->handle($body);

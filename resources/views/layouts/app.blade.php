@@ -26,7 +26,7 @@
         }
     </style>
 </head>
-<body id="app-layout">
+<body id="app-layout" ng-app="main-App">
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
@@ -50,6 +50,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/home') }}">Home</a></li>
                     <li><a href="{{ url('/projects') }}">Projects</a></li>
+                    <li><a href="/#/requests">Requests</a></li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -58,10 +59,9 @@
                     @if (Auth::guest())
                         <li><a href="{{ url('/login') }}">Login</a></li>
                         <li><a href="{{ url('/register') }}">Register</a></li>
-                        <li><a href="{{ url('/requests') }}">Requests</a></li>
                     @else
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>
                             </a>
 
@@ -75,12 +75,36 @@
         </div>
     </nav>
 
+    <div class="container">
+        <ng-view></ng-view>
+    </div>
+
     @yield('content')
 
     <!-- JavaScripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css"></script>
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
+
+    <!-- Angular JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-route.min.js"></script>
+
+    <!-- MY App -->
+    <script src="{{ asset('/app/packages/dirPagination.js') }}"></script>
+    <script src="{{ asset('/app/routes.js') }}"></script>
+    <script src="{{ asset('/app/services/myServices.js') }}"></script>
+    <script src="{{ asset('/app/services/RequestServices.js') }}"></script>
+    <script src="{{ asset('/app/helper/myHelper.js') }}"></script>
+
+    <!-- App Controller -->
+    <script src="{{ asset('/app/controllers/ItemController.js') }}"></script>
+    <script src="{{ asset('/app/controllers/RequestsController.js') }}"></script>
+    <script src="{{ asset('/app/controllers/ResponseController.js') }}"></script>
+
+
     <script src="{{ url('/js/app.js') }}"></script>
 </body>
 </html>

@@ -21,10 +21,34 @@ use Zend\Soap\Client;
 
 class RequestsController extends Controller
 {
+
+    private $projectId;
+
+    /**
+     * @return mixed
+     */
+    public function getProjectId()
+    {
+        return $this->projectId;
+    }
+
+    /**
+     * @param mixed $projectId
+     */
+    public function setProjectId($projectId)
+    {
+        $this->projectId = $projectId;
+    }
+
+
+
     public function index()
     {
-        $requests = \App\Requests::all();
-        return view('requests.index', ['requests' => $requests]);
+//        $requests = \App\Requests::all();
+//        return view('requests.index', ['requests' => $requests]);
+
+        $requests = \App\Requests::paginate(5);
+        return response($requests);
     }
     
     public function edit($id) {
@@ -32,14 +56,29 @@ class RequestsController extends Controller
 
         $projects = Project::all();
 
-        $types = $this->getEntitiesList(4);
-        $similarEntities = $this->getSimilarEntities($types, $request->soap_action);
-        
+        $types = null;
+        $similarEntities = null;
+        $entities = null;
+        if ($request->project_id) {
+            $this->setProjectId($request->project_id);
+            $types = $this->getEntitiesList($request->project_id);
+            $similarEntities = $this->getSimilarEntities($types, $request->soap_action);
+            $entities = $this->getEntities($similarEntities);
+        }
+
+        return response([
+            'request' => $request,
+            'projects' => $projects,
+            'types' => $types ? $types : [],
+            'most_probably_types' => $similarEntities ? $similarEntities : [],
+            'entities' => $entities ? $entities : [],
+        ]);
         return view('requests.edit', [
             'request' => $request, 
             'projects' => $projects,
             'types' => $types
         ]);
+
     }
 
 
@@ -187,4 +226,83 @@ class RequestsController extends Controller
             $sortedResult[count($sortedResult)] :
             array_merge($sortedResult[count($sortedResult)-1],$sortedResult[count($sortedResult)-2]);
     }
+
+    public function getEntities(array $entitiesArray) {
+        $user = Auth::user();
+        $project = Project::where('id', (int) $this->getProjectId())->first();
+
+        if ($user->id != $project->user_id) {
+            return redirect('/home');
+        }
+
+        $storage = Storage::getFacadeApplication();
+        $path = $storage->basePath();
+        $pathToUserDir = $path . '/storage/wsdl/' . $user->id;
+        $pathToProject = $project->dir_name;
+        include $pathToUserDir . '/' .$pathToProject . '/autoload.php';
+
+        $arrayOfObjects = [];
+        $i = 0;
+        foreach ($entitiesArray as $item) {
+            $refl = new \ReflectionClass($item);
+            $obj = $refl->newInstanceWithoutConstructor();
+
+            $arrayOfObjects[$i]['class_name'] = $item;
+            $arrayOfObjects[$i]['entity'] = $obj;
+
+            $j = 0;
+            foreach ($refl->getProperties() as $refProperty) {
+                if (preg_match('/@var\s+([^\s]+)/', $refProperty->getDocComment(), $matches)) {
+                    list(, $type) = $matches;
+
+                }
+                $arrayOfObjects[$i]['properties'][$j]['name'] = $refProperty->getName();
+                $arrayOfObjects[$i]['properties'][$j]['type'] = !empty($type) ? $type : '';
+                $j++;
+            }
+
+            $i++;
+        }
+        return $arrayOfObjects;
+    }
+
+
+    public function getProjects()
+    {
+        return response(Project::all());
+    }
+
+    public function bindToProject(Request $request)
+    {
+        $input = $request->all();
+        try {
+            $request = \App\Requests::where('id', (int) $input['request_id'])->first();
+            $request->project_id = $input['project_id'];
+            $request->save();
+            return response(['success' => '1']);
+        }
+        catch (\Exception $e) {
+            return response(['success' => '0']);
+        }
+        
+        $x = 0;
+    }
+    
+    public function addResponse(Request $request)
+    {
+
+        $input = $request->all();
+
+        $id = $input['id'];
+        $requestModel = \App\Requests::where('id', (int) $id)->first();
+
+        $responseModel = new Responses();
+        $responseModel->response_object = $input['class_name'];
+        $responseModel->project_id = $requestModel->project_id;
+        $responseModel->response_value = json_encode($input['properties']);
+        $responseModel->request_code = $requestModel->request_code;
+        $responseModel->save();
+        return response(['success' => '1']);
+    }
+
 }

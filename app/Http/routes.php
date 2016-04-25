@@ -50,5 +50,30 @@ Route::post('wsdl/getresponse', 'WsdlAjaxController@getSoapResponse');
 Route::post('soap', 'SoapServerController@index');
 
 Route::get('requests', 'RequestsController@index');
+
+Route::get('requests/get_projects', 'RequestsController@getProjects');
+
+Route::post('requests/bind_to_project', 'RequestsController@bindToProject');
+Route::post('requests/add_response', 'RequestsController@addResponse');
+
 Route::get('requests/{id}/edit', 'RequestsController@edit');
 Route::post('requests/{id}/edit', 'RequestsController@update');
+
+
+Route::get('items', 'ItemController@index')->name('items');
+Route::delete('items/{id}', 'ItemController@destroy')->name('items');
+Route::post('items', 'ItemController@store')->name('items');
+Route::get('items/{id}/edit', 'ItemController@edit')->name('items');
+Route::put('items/{id}', 'ItemController@update')->name('items');
+
+
+
+// Templates
+Route::group(array('prefix'=>'/templates/'),function(){
+    Route::get('{template}', array( function($template)
+    {
+        $template = str_replace(".html","",$template);
+        View::addExtension('html','php');
+        return View::make('templates.'.$template);
+    }));
+});

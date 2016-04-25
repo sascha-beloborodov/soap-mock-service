@@ -1,0 +1,80 @@
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+        Request
+    </div>
+
+    <div class="col-md-10 col-md-offset-1">
+        <b>From service:</b> {{data.request.service}}
+    </div>
+
+    <div class="col-md-10 col-md-offset-1">
+        <b>When?:</b> {{data.request.created_at}}
+    </div>
+
+    <div class="col-md-10 col-md-offset-1">
+        <b>Action:</b> {{data.request.soap_action}}
+    </div>
+
+    <div class="col-md-10 col-md-offset-1">
+        <b>Code ns1:</b> {{data.request.request_code}}
+    </div>
+</div>
+<form class="form-horizontal" method="post">
+<div class="form-group">
+    <label for="" class="col-sm-2 control-label">Request Body:</label>
+    <div class="col-md-10">
+        <textarea type="email" class="form-control" style="height: 450px;" disabled>{{data.request.body}}</textarea>
+    </div>
+</div>
+<div class="form-group">
+    <label for="" class="col-sm-2 control-label">Projects:</label>
+    <div class="col-md-10">
+        <label for="">Projects:</label>
+        <select name="project_id" id="" class="form-control">
+            <option value="{{project.id}}" ng-repeat="project in data.projects" ng-selected="project.id == data.request.project_id">
+                {{project.name}}
+            </option>
+        </select>
+
+        <label for="">Types:</label>
+        <select name="entity" id="" class="form-control">
+            <option value=""></option>
+            <option value="{{type}}" ng-repeat="type in data.types">
+                {{type}}
+            </option>
+        </select>
+
+        <label for="">Most probably types</label>
+        <select name="most_probably_types" id="" class="form-control">
+            <option value=""></option>
+            <option value="{{probably_type}}" ng-repeat="probably_type in data.most_probably_types">
+                {{probably_type}}
+            </option>
+        </select>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4" ng-repeat="entity in data.entities">
+        <div class="panel panel-default">
+            <div class="panel-heading">{{entity.class_name}}</div>
+            <div class="panel-body" id="{{entity.class_name}}">
+                <div class="form-group" ng-repeat="property in entity.properties">
+                    <label for="">{{property.name}} - @{{property.type}}:</label>
+                    <input name="{{property.name}}" val="" type="text" class="form-control" placeholder="{{property.name}}">
+                    <p class="help-block">*</p>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-default" ng-click="sendEntity(entity)">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-offset-2 col-md-10">
+        <button type="submit" class="btn btn-default">Apply</button>
+    </div>
+</div>
+</form>
