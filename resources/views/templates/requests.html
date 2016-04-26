@@ -6,11 +6,10 @@
         <div class="pull-right" style="padding-top:30px">
             <div class="box-tools" style="display:inline-table">
                 <div class="input-group">
-                    <input type="text" class="form-control input-sm ng-valid ng-dirty" placeholder="Search" ng-change="searchDB()" ng-model="searchText" name="table_search" title="" tooltip="" data-original-title="Min character length is 3">
-                    <span class="input-group-addon">Search</span>
+                    <!--<input type="text" class="form-control input-sm ng-valid ng-dirty" placeholder="Search" ng-change="searchDB()" ng-model="searchText" name="table_search" title="" tooltip="" data-original-title="Min character length is 3">-->
+                    <!--<span class="input-group-addon">Search</span>-->
                 </div>
             </div>
-            <button class="btn btn-success" data-toggle="modal" data-target="#create-user">Create New</button>
         </div>
     </div>
 </div>
@@ -28,7 +27,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr dir-paginate="value in data | itemsPerPage:5" total-items="totalItems">
+    <tr dir-paginate="value in data | itemsPerPage:5 |  orderBy: 'created_at': true" total-items="totalItems">
         <td>{{ value.service }}</td>
         <td>{{ value.soap_action }}</td>
         <td>{{ value.body }}</td>
@@ -41,7 +40,9 @@
                ng-click="bindProjectPopUp(value,$index)">Bind with a project</a>
         </td>
         <td>
-            <a href="#/response/{{value.id}}/create" class="btn btn-primary">Edit</a>
+            <a ng-click="goToResponse(value)" href="#/response/{{value.id}}/create" class="btn btn-primary">Create</a>
+            <br><br>
+            <a ng-click="goToResponse(value)" href="#/response/{{value.id}}/edit" class="btn btn-primary">Edit</a>
             <br><br>
             <button ng-click="remove(value,$index)" class="btn btn-danger">Delete</button>
         </td>

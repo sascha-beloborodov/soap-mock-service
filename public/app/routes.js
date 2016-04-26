@@ -1,4 +1,7 @@
-var app =  angular.module('main-App',['ngRoute','angularUtils.directives.dirPagination']);
+var app =  angular.module('main-App',[
+    'ngRoute',
+    'angularUtils.directives.dirPagination',
+    'localytics.directives']);
 var _ROUTES = ['edit', 'delete'];
 
 app.config(['$routeProvider',

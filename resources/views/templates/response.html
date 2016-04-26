@@ -23,53 +23,79 @@
 <div class="form-group">
     <label for="" class="col-sm-2 control-label">Request Body:</label>
     <div class="col-md-10">
-        <textarea type="email" class="form-control" style="height: 450px;" disabled>{{data.request.body}}</textarea>
+        <!--<code>{{data.request.body}}</code>-->
+        <textarea class="form-control" style="height: 450px;">{{data.request.body}}</textarea>
     </div>
 </div>
 <div class="form-group">
     <label for="" class="col-sm-2 control-label">Projects:</label>
     <div class="col-md-10">
         <label for="">Projects:</label>
-        <select name="project_id" id="" class="form-control">
+        <select name="project_id" id="select-project-id" class="form-control">
             <option value="{{project.id}}" ng-repeat="project in data.projects" ng-selected="project.id == data.request.project_id">
                 {{project.name}}
             </option>
         </select>
 
         <label for="">Types:</label>
-        <select name="entity" id="" class="form-control">
-            <option value=""></option>
-            <option value="{{type}}" ng-repeat="type in data.types">
-                {{type}}
-            </option>
+        <select name="entity" id="" class="form-control" chosen
+                data-placeholder="Pick one of these"
+                allow-single-deselect="true"
+                ng-model="allEntities"
+                ng-options="b for b in data.types"
+                ng-change="selectEntity(allEntities)">
+            <!--<option value=""></option>-->
+            <!--<option value="{{type}}" ng-repeat="type in data.types">-->
+                <!--{{type}}-->
+            <!--</option>-->
         </select>
 
         <label for="">Most probably types</label>
-        <select name="most_probably_types" id="" class="form-control">
-            <option value=""></option>
-            <option value="{{probably_type}}" ng-repeat="probably_type in data.most_probably_types">
-                {{probably_type}}
-            </option>
+        <select name="most_probably_types" id="" class="form-control" chosen
+                data-placeholder="Pick one of these"
+                allow-single-deselect="true"
+                ng-model="probablyEntity"
+                ng-options="b for b in data.most_probably_types"
+                ng-change="selectEntity(probablyEntity)">
+            <!--<option value=""></option>-->
+            <!--<option value="{{probably_type}}" ng-repeat="probably_type in data.most_probably_types">-->
+                <!--{{probably_type}}-->
+            <!--</option>-->
         </select>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-4" ng-repeat="entity in data.entities">
+    <div class="col-md-12">
         <div class="panel panel-default">
-            <div class="panel-heading">{{entity.class_name}}</div>
-            <div class="panel-body" id="{{entity.class_name}}">
-                <div class="form-group" ng-repeat="property in entity.properties">
-                    <label for="">{{property.name}} - @{{property.type}}:</label>
+            <div class="panel-heading">{{currentEntity.class_name}}</div>
+            <div class="panel-body" id="{{currentEntity.class_name}}">
+                <div class="form-group" ng-repeat="property in currentEntity.properties">
+                    <label for="" ng-click="openAddTypePopUp(entity, property)">{{property.name}} @ {{ property.type}}:</label>
                     <input name="{{property.name}}" val="" type="text" class="form-control" placeholder="{{property.name}}">
                     <p class="help-block">*</p>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-default" ng-click="sendEntity(entity)">Apply</button>
+                    <button class="btn btn-default" ng-click="sendEntity(currentEntity)">Apply</button>
                 </div>
             </div>
         </div>
     </div>
+    <!--<div class="col-md-4" ng-repeat="entity in data.entities">-->
+        <!--<div class="panel panel-default">-->
+            <!--<div class="panel-heading">{{entity.class_name}}</div>-->
+            <!--<div class="panel-body" id="{{entity.class_name}}">-->
+                <!--<div class="form-group" ng-repeat="property in entity.properties">-->
+                    <!--<label for="" ng-click="openAddTypePopUp(entity, property)">{{property.name}} @ {{ property.type}}:</label>-->
+                    <!--<input name="{{property.name}}" val="" type="text" class="form-control" placeholder="{{property.name}}">-->
+                    <!--<p class="help-block">*</p>-->
+                <!--</div>-->
+                <!--<div class="form-group">-->
+                    <!--<button class="btn btn-default" ng-click="sendEntity(entity)">Apply</button>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
 </div>
 
 <div class="form-group">
@@ -78,3 +104,59 @@
     </div>
 </div>
 </form>
+
+
+<!-- Edit Modal -->
+<div class="modal fade" id="add-type" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" name="editItem" role="form" ng-submit="bindProject()">
+                <input ng-model="form.id" type="hidden" placeholder="Name" name="name" class="form-control" />
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">{{currentProperty}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+
+                                <div class="panel panel-default" ng-repeat="entity in currentEntity.subEntities[currentProperty]">
+                                    <div class="panel-heading">{{entity.class_name}}</div>
+                                    <button type="button" class="close" aria-label="Delete" ng-click="removeSubObject($index, currentProperty)"><span aria-hidden="true">×</span></button>
+                                    <div class="panel-body" id="">
+                                        <div class="form-group" ng-repeat="property in entity.properties">
+                                            <label for="">{{property.name}} @ {{ property.type}}: </label>
+                                            <span>{{property.val}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">{{currentSubEntity.class_name}}</div>
+                                    <div class="panel-body" id="sub-{{currentSubEntity.class_name}}">
+                                        <div class="form-group" ng-repeat="property in currentSubEntity.properties">
+                                            <label for="">{{property.name}} @ {{ property.type}}:</label>
+                                            <input name="{{property.name}}"
+                                                   type="text"
+                                                   class="form-control"
+                                                   placeholder="{{property.name}}">
+                                            <p class="help-block">*</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-default" ng-click="addToCurrentArray(currentProperty, currentSubEntity)">Apply</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button class="btn btn-primary create-crud">Apply</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,19 +1,45 @@
-app.controller('ResponseController', function(requestsFactory,$scope,$http, $routeParams){
- 
-  $scope.data = [];
-  $scope.libraryTemp = {};
-  $scope.totalItemsTemp = {};
+app.controller('ResponseController', function (requestsFactory, $scope, $http, $routeParams) {
 
-  $scope.totalItems = 0;
-  $scope.entitiList = [];
+    $scope.data = [];
+    $scope.subEntities = [];
+    $scope.projectId = 0;
+    $scope.libraryTemp = {};
+    $scope.totalItemsTemp = {};
 
-    $scope.primitiveTypes = ['string', 'decimal', 'int', 'float', 'integer'];
+    $scope.totalItems = 0;
+    $scope.entitiList = [];
+
+    $scope.primitiveTypes = ['string', 'decimal', 'int', 'float', 'integer', 'boolean'];
+
+    $scope.currentEntity = {};
+    $scope.currentSubEntity = {};
+    $scope.currentProperty = '';
+    $scope.currentEntity.subEntities = {};
+    $scope.inputs= [];
+
+    $scope.entityInSelect = '';
 
 
-  requestsFactory.httpRequest('/requests/' + $routeParams.id + '/edit').then(function(data) {
-    $scope.data = data;
-    $scope.totalItems = data.total;
-  });
+    function doForEdit(response) {
+        var entity = $.parseJSON(response.response_value);
+        $scope.entityInSelect = response.response_object;
+
+        return 0;
+    }
+
+    requestsFactory.httpRequest('/requests/' + $routeParams.id + '/edit').then(function (data) {
+
+
+
+        $scope.data = data;
+
+        if ($routeParams.type == 'edit') {
+            doForEdit(data.response);
+        }
+
+        $(".chosen-select").chosen({no_results_text: "Oops, nothing found!"});
+
+    });
 
     function initRouter() {
         if ($routeParams.type != undefined) {
@@ -29,55 +55,57 @@ app.controller('ResponseController', function(requestsFactory,$scope,$http, $rou
         }
     }
 
-  $scope.searchDB = function(){
-      if($scope.searchText.length >= 3){
-          if($.isEmptyObject($scope.libraryTemp)){
-              $scope.libraryTemp = $scope.data;
-              $scope.totalItemsTemp = $scope.totalItems;
-              $scope.data = {};
-          }
-          getResultsPage(1);
-      }else{
-          if(! $.isEmptyObject($scope.libraryTemp)){
-              $scope.data = $scope.libraryTemp ;
-              $scope.totalItems = $scope.totalItemsTemp;
-              $scope.libraryTemp = {};
-          }
-      }
-  }
-
-  $scope.saveAdd = function(){
-    requestsFactory.httpRequest('items','POST',{},$scope.form).then(function(data) {
-      $scope.data.push(data);
-      $(".modal").modal("hide");
-    });
-  }
-
-  $scope.edit = function(id){
-    requestsFactory.httpRequest('requests/'+id+'/edit').then(function(data) {
-    	console.log(data);
-        if (!data) {
-            throw new Error("Not data");
+    $scope.openAddTypePopUp = function (ent, prop) {
+        if (['string', 'decimal', 'int', 'float', 'integer', 'boolean'].indexOf(prop.type) != -1) {
+            alert('It is a primitive type');
+            return;
         }
-      	$scope.form = data;
-    });
-  };
 
-  $scope.saveEdit = function(){
-    requestsFactory.httpRequest('requests/'+$scope.form.id,'PUT',{},$scope.form).then(function(data) {
-      	$(".modal").modal("hide");
-        $scope.data = apiModifyTable($scope.data,data.id,data);
-    });
-  };
+        $('.modal').modal('show');
 
-  $scope.remove = function(item,index){
-    var result = confirm("Are you sure delete this item?");
-   	if (result) {
-      requestsFactory.httpRequest('requests/'+item.id,'DELETE').then(function(data) {
-          $scope.data.splice(index,1);
-      });
-    }
-  };
+        if (!requestsFactory.projectId) {
+            requestsFactory.projectId = $('#select-project-id').val();
+        }
+
+        $scope.currentProperty = prop.type;
+
+            requestsFactory.httpRequest(
+            'responses/get_entity?project_id='+requestsFactory.projectId +
+            '&entity=' + prop.type, 'GET').then(function (data) {
+            // $scope.currentEntity.subEntitiesArray.push(data);
+            $scope.currentEntity.subEntities[prop.type] =
+                $scope.currentEntity.subEntities[prop.type] || [];
+            // $scope.currentEntity.subEntities[prop.type].push(data);
+            $scope.currentSubEntity = data;
+        });
+
+    };
+
+    $scope.selectEntity = function (ent) {
+
+        if (!Number(requestsFactory.projectId)) {
+            requestsFactory.projectId = $('#select-project-id').val();
+        }
+        
+        requestsFactory.httpRequest(
+            'responses/get_main_entity?project_id='+requestsFactory.projectId +
+            '&entity=' + ent, 'GET').then(function (data) {
+            $scope.currentEntity = data;
+            $scope.currentEntity.subEntities = {};
+            // $scope.currentEntity.subEntitiesArray = [];
+        });
+    };
+
+
+    $scope.addToCurrentArray = function (currentProp, subEntity) {
+        var obj = {};
+        $('#sub-' + subEntity.class_name + ' input').each(function (ind, val) {
+            subEntity.properties[ind].val = val.value;
+        });
+
+        $scope.currentEntity.subEntities[currentProp].push(subEntity);
+        $scope.currentSubEntity = $.extend(true, {}, $scope.currentSubEntity);
+    };
 
     $scope.sendEntity = function (entity) {
         var sendObject = {
@@ -89,11 +117,16 @@ app.controller('ResponseController', function(requestsFactory,$scope,$http, $rou
             sendObject.properties[val.name] = val.value
         });
         sendObject.id = $routeParams.id;
+        sendObject.entity = $scope.currentEntity;
 
-        requestsFactory.httpRequest('requests/add_response','POST', {}, sendObject).then(function(data) {
-            var x = 0
+        requestsFactory.httpRequest('requests/add_response', 'POST', {}, sendObject).then(function (data) {
+            // TODO success or fail
         });
     };
 
-  initRouter();
+    
+    $scope.removeSubObject = function (i, currentProperty) {
+        $scope.currentEntity.subEntities[currentProperty].splice(i, 1);
+    };
+    initRouter();
 });

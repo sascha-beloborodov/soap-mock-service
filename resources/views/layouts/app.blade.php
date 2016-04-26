@@ -13,6 +13,8 @@
 
     <!-- Styles -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="bower_components/chosen/chosen.css" />
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
     <link rel="stylesheet" href="{{ url('/css/main.css') }}">
 
@@ -84,9 +86,9 @@
     <!-- JavaScripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css"></script>
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
+
+
 
     <!-- Angular JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.min.js"></script>
@@ -103,6 +105,9 @@
     <script src="{{ asset('/app/controllers/ItemController.js') }}"></script>
     <script src="{{ asset('/app/controllers/RequestsController.js') }}"></script>
     <script src="{{ asset('/app/controllers/ResponseController.js') }}"></script>
+
+    <script src="bower_components/chosen/chosen.jquery.js"></script>
+    <script src="bower_components/angular-chosen-localytics/dist/angular-chosen.min.js"></script>
 
 
     <script src="{{ url('/js/app.js') }}"></script>

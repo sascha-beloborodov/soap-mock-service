@@ -114,7 +114,7 @@ class SoapServerController extends Controller {
         $reflectorObject = $reflector->newInstanceWithoutConstructor();
 
 
-        $args = json_decode($responseModel->response_value, true);
+        $args = $this->getArgsFromEntity($responseModel->response_value);
         $reflectorProp = new \ReflectionClass($responseModel->response_object);
         $reflectorPropObject = $reflectorProp->newInstanceArgs($args);
 
@@ -178,5 +178,39 @@ class SoapServerController extends Controller {
             }
         }
         return '';
+    }
+
+
+    private function getArgsFromEntity($body)
+    {
+        $entityAsArray = json_decode($body, true);
+        $result = [];
+
+        $i = 0;
+        foreach ($entityAsArray as $key => $item) {
+            if (!is_array($item) && $item !== '' && $key != 'class_name') {
+                $result[] = $item;
+            }
+            else if ($item === '') {
+                $arrayProp = array_shift($entityAsArray['subEntities']);
+                if (count($arrayProp) == 0) {continue;}
+                $props = [];
+                foreach ($arrayProp as $itemOfProp) {
+                    $reflector = new \ReflectionClass($itemOfProp['class_name']);
+                    $args = [];
+                    foreach ($itemOfProp['properties'] as $property) {
+                        $args[] = $property['val'];
+                    }
+                    $props[] = $reflector->newInstanceArgs($args);
+                }
+                $result[] = $props;
+
+               $i++;
+            }
+        }
+
+
+
+        return $result;
     }
 }

@@ -116,6 +116,10 @@ app.controller('RequestsController', function(requestsFactory,$scope,$http, $rou
         });
     };
 
+    $scope.goToResponse = function (val) {
+        requestsFactory.projectId = val.project_id;
+    };
+
     // $scope.projectId = 0;
 
     // $scope.setProjectId = function (val) {

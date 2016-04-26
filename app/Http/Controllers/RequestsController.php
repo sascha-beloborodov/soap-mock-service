@@ -47,14 +47,21 @@ class RequestsController extends Controller
 //        $requests = \App\Requests::all();
 //        return view('requests.index', ['requests' => $requests]);
 
-        $requests = \App\Requests::paginate(5);
+        $requests = \App\Requests::orderBy('created_at', 'desc')->paginate(5);
         return response($requests);
     }
     
     public function edit($id) {
         $request = \App\Requests::where('id', (int) $id)->first();
+        $response = Responses::where('request_code', (int) $request->request_code)->first();
 
         $projects = Project::all();
+
+//        $before = array('<','>');
+//        $after = array('&lt;','&gt;');
+        $request->body = str_replace('>', ">\n", $request->body);
+        $request->body = str_replace('<', "\n<", $request->body);
+
 
         $types = null;
         $similarEntities = null;
@@ -68,6 +75,7 @@ class RequestsController extends Controller
 
         return response([
             'request' => $request,
+            'response' => $response, 
             'projects' => $projects,
             'types' => $types ? $types : [],
             'most_probably_types' => $similarEntities ? $similarEntities : [],
@@ -267,6 +275,8 @@ class RequestsController extends Controller
     }
 
 
+    
+    
     public function getProjects()
     {
         return response(Project::all());
@@ -299,7 +309,7 @@ class RequestsController extends Controller
         $responseModel = new Responses();
         $responseModel->response_object = $input['class_name'];
         $responseModel->project_id = $requestModel->project_id;
-        $responseModel->response_value = json_encode($input['properties']);
+        $responseModel->response_value = json_encode(array_merge($input['properties'], $input['entity']));
         $responseModel->request_code = $requestModel->request_code;
         $responseModel->save();
         return response(['success' => '1']);

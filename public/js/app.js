@@ -218,5 +218,6 @@ $(function() {
                 .find('.result-response pre code')
                 .text(content.toString());
         });
-    })
+    });
+    
 });

@@ -51,10 +51,20 @@ Route::post('soap', 'SoapServerController@index');
 
 Route::get('requests', 'RequestsController@index');
 
+
+
+
+
 Route::get('requests/get_projects', 'RequestsController@getProjects');
 
 Route::post('requests/bind_to_project', 'RequestsController@bindToProject');
 Route::post('requests/add_response', 'RequestsController@addResponse');
+
+Route::get('responses/get_entity', 'ResponsesController@getEntity');
+Route::get('responses/get_main_entity', 'ResponsesController@getMainEntity');
+Route::post('requests/add_response', 'RequestsController@addResponse');
+
+
 
 Route::get('requests/{id}/edit', 'RequestsController@edit');
 Route::post('requests/{id}/edit', 'RequestsController@update');
