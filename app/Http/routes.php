@@ -66,7 +66,7 @@ Route::post('requests/add_response', 'RequestsController@addResponse');
 
 
 
-Route::get('requests/{id}/edit', 'RequestsController@edit');
+Route::get('/requests/{id}/edit', 'RequestsController@edit');
 Route::post('requests/{id}/edit', 'RequestsController@update');
 
 

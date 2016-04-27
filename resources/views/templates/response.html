@@ -31,7 +31,7 @@
     <label for="" class="col-sm-2 control-label">Projects:</label>
     <div class="col-md-10">
         <label for="">Projects:</label>
-        <select name="project_id" id="select-project-id" class="form-control">
+        <select name="project_id" id="select-project-id" class="form-control" disabled>
             <option value="{{project.id}}" ng-repeat="project in data.projects" ng-selected="project.id == data.request.project_id">
                 {{project.name}}
             </option>
@@ -41,9 +41,10 @@
         <select name="entity" id="" class="form-control" chosen
                 data-placeholder="Pick one of these"
                 allow-single-deselect="true"
-                ng-model="allEntities"
+                ng-model="entityInSelect"
                 ng-options="b for b in data.types"
                 ng-change="selectEntity(allEntities)">
+            <!--ng-selected="b == entityInSelect"-->
             <!--<option value=""></option>-->
             <!--<option value="{{type}}" ng-repeat="type in data.types">-->
                 <!--{{type}}-->
@@ -71,9 +72,8 @@
             <div class="panel-heading">{{currentEntity.class_name}}</div>
             <div class="panel-body" id="{{currentEntity.class_name}}">
                 <div class="form-group" ng-repeat="property in currentEntity.properties">
-                    <label for="" ng-click="openAddTypePopUp(entity, property)">{{property.name}} @ {{ property.type}}:</label>
-                    <input name="{{property.name}}" val="" type="text" class="form-control" placeholder="{{property.name}}">
-                    <p class="help-block">*</p>
+                    <label style="cursor: pointer" class="add-type" for="" ng-click="openAddTypePopUp(entity, property)">{{property.name}} @ {{ property.type}}:</label>
+                    <input name="{{property.name}}" value="{{property.val}}" type="text" class="form-control" placeholder="{{property.name}}">
                 </div>
                 <div class="form-group">
                     <button class="btn btn-default" ng-click="sendEntity(currentEntity)">Apply</button>
@@ -143,7 +143,6 @@
                                                    type="text"
                                                    class="form-control"
                                                    placeholder="{{property.name}}">
-                                            <p class="help-block">*</p>
                                         </div>
                                         <div class="form-group">
                                             <button class="btn btn-default" ng-click="addToCurrentArray(currentProperty, currentSubEntity)">Apply</button>

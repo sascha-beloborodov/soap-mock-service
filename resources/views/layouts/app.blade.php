@@ -14,7 +14,7 @@
     <!-- Styles -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" href="bower_components/chosen/chosen.css" />
+    <link rel="stylesheet" type="text/css" href="/bower_components/chosen/chosen.css" />
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
     <link rel="stylesheet" href="{{ url('/css/main.css') }}">
 
@@ -106,8 +106,8 @@
     <script src="{{ asset('/app/controllers/RequestsController.js') }}"></script>
     <script src="{{ asset('/app/controllers/ResponseController.js') }}"></script>
 
-    <script src="bower_components/chosen/chosen.jquery.js"></script>
-    <script src="bower_components/angular-chosen-localytics/dist/angular-chosen.min.js"></script>
+    <script src="/bower_components/chosen/chosen.jquery.js"></script>
+    <script src="/bower_components/angular-chosen-localytics/dist/angular-chosen.min.js"></script>
 
 
     <script src="{{ url('/js/app.js') }}"></script>

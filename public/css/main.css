@@ -31,3 +31,7 @@
     cursor: pointer;
     float: right;
 }
+
+.add-type:hover {
+    color: rgba(0, 0, 0, 0.35);
+}

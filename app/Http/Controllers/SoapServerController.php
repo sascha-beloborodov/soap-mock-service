@@ -44,7 +44,7 @@ class SoapServerController extends Controller {
             exit();
         }
 
-        $server = new Server('http://wsdl-client.loc/wsdl/2/a847410f060dec8270a8eabf242cf45b/web-service-1-4.wsdl', [
+        $server = new Server(null, [
             'uri' => 'http://wsdl-client.loc/soap'
         ]);
 
@@ -56,7 +56,7 @@ class SoapServerController extends Controller {
 
         $service->setRequestCode($this->requestCode);
 
-        $response = $server->handle(/*$this->body*/);
+        $response = $server->handle($this->body);
         
         Log::info($response);
 

@@ -23,18 +23,32 @@ app.controller('ResponseController', function (requestsFactory, $scope, $http, $
     function doForEdit(response) {
         var entity = $.parseJSON(response.response_value);
         $scope.entityInSelect = response.response_object;
+        $scope.currentEntity.subEntities = entity.subEntities;
+
+        for (var i = 0, len = entity.properties.length; i < len; i++) {
+            for (var j in entity) {
+                if (entity.properties[i].name == j) {
+                    entity.properties[i].val = entity[j];
+                }
+            }
+        }
+
+        $scope.currentEntity = entity;
 
         return 0;
     }
 
     requestsFactory.httpRequest('/requests/' + $routeParams.id + '/edit').then(function (data) {
 
-
-
         $scope.data = data;
 
         if ($routeParams.type == 'edit') {
-            doForEdit(data.response);
+            try {
+                doForEdit(data.response);
+            }
+            catch (e) {
+                window.location = '/#/requests';
+            }
         }
 
         $(".chosen-select").chosen({no_results_text: "Oops, nothing found!"});
