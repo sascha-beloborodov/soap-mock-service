@@ -24,6 +24,24 @@ class SoapService {
     
     public $responsePropertyObjectState;
 
+    public $mainResponseClass;
+
+    /**
+     * @return mixed
+     */
+    public function getMainResponseClass()
+    {
+        return $this->mainResponseClass;
+    }
+
+    /**
+     * @param mixed $mainResponseClass
+     */
+    public function setMainResponseClass($mainResponseClass)
+    {
+        $this->mainResponseClass = $mainResponseClass;
+    }
+
     /**
      * @return mixed
      */
@@ -94,25 +112,15 @@ class SoapService {
     private function _getRequestStatus($params = null)
     {
         $responseObject = $this->getResponseObject();
-//        $responseObject->response = 200;
-
-        if (is_a($responseObject->order_delivery_allowance, 'OrderDeliveryAllowance')) {
-            $responseObject->order_delivery_allowance->order_number = '500000222';
-            $responseObject->order_delivery_allowance->status = 'OK';
-        }
 
         $state = $this->getResponsePropertyObjectState();
         $state->state = $state::success;
-//        $responseObject->setState($state);
         $responseObject->setState('success');
+        $mainResponse = $this->mainResponseClass->setResponse($responseObject);
 
-//        $refl = new \ReflectionClass('OrderDeliveryAllowance');
-//        $reflObj = $refl->newInstanceWithoutConstructor();
-//        $responseObject->setOrder_delivery_allowance()
-        
+//        return ['response' => $responseObject];
+        return $mainResponse;
 //        return $responseObject;
-        return ['response' => $responseObject];
-//        return ['response' => [$this->getResponseObject()]];
     }
 
     /**

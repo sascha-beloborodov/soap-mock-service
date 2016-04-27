@@ -27,5 +27,4 @@ app.config(['$routeProvider',
                 templateUrl: 'templates/response.html',
                 controller: 'ResponseController'
             });
-
 }]);

@@ -103,7 +103,7 @@ class SoapServerController extends Controller {
 
 
 
-        $server = new Server('http://wsdl-client.loc/wsdl/2/a847410f060dec8270a8eabf242cf45b/web-service-1-4.wsdl', [
+        $server = new Server(null, [
             'uri' => 'http://wsdl-client.loc/soap'
         ]);
 
@@ -121,6 +121,10 @@ class SoapServerController extends Controller {
         $reflectorPropState = new \ReflectionClass('StatusResponseState');
         $reflectorPropObjectState = $reflectorPropState->newInstanceWithoutConstructor();
 
+        $reflectorPropStateGetResponse = new \ReflectionClass('getRequestStatusResponseObject');
+        $reflectorPropObjectStateGetResponse = $reflectorPropStateGetResponse->newInstanceWithoutConstructor();
+
+
         $method = "set" . ucfirst(strtolower(preg_replace('/\B([A-Z])/', '_$1', $responseModel->response_object)));
 
         $reflectorObject->$method($reflectorPropObject);
@@ -128,19 +132,23 @@ class SoapServerController extends Controller {
         $service = new SoapService();
         $server->setClass($service);
 //        $server->handle($body);
-        $server->setReturnResponse(true);
+//        $server->setReturnResponse(true);
 
+        
+        
         $service->setRequestCode($this->requestCode);
         $service->setResponseObject($reflectorObject);
         $service->setResponsePropertyObject($reflectorPropObject);
         $service->setResponsePropertyObjectState($reflectorPropObjectState);
+        $service->setMainResponseClass($reflectorPropObjectStateGetResponse);
 
 //        $server->handle();
-        $response = $server->handle(/*$this->body*/);
+        $response = $server->handle($this->body);
+//        $server->handle($this->body);
 //
         Log::info($response);
-//
         echo $response;
+//
         exit();
     }
 

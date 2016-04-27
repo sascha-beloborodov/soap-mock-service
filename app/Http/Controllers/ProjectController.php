@@ -83,7 +83,8 @@ class ProjectController extends Controller
             $generator->generate(
                 new \Wsdl2PhpGenerator\Config(array(
                     'inputFile' => $pathToUserDir . '/' . $project->wsdl_name,
-                    'outputDir' => $pathToUserDir
+                    'outputDir' => $pathToUserDir,
+                    'constructorParamsDefaultToNull' => true,
                 ))
             );
 
@@ -94,7 +95,7 @@ class ProjectController extends Controller
             $e->getMessage();
         }
         
-        redirect('/projects');
+        return redirect('/projects');
     }
 
     /**

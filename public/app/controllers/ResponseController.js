@@ -135,12 +135,23 @@ app.controller('ResponseController', function (requestsFactory, $scope, $http, $
 
         requestsFactory.httpRequest('requests/add_response', 'POST', {}, sendObject).then(function (data) {
             // TODO success or fail
+            alert('Response was created');
         });
     };
 
     
     $scope.removeSubObject = function (i, currentProperty) {
         $scope.currentEntity.subEntities[currentProperty].splice(i, 1);
+    };
+
+    $scope.getValueFromReques = function (id, inputName) {
+        var strVal = $('textarea').text();
+        var pattern = new RegExp('<ns1:'+inputName+'[^>]*>((.|[\n\r])*)<\/ns1:'+inputName+'>');
+        // var pattern = new RegExp('/<ns1:'+inputName+'[^>]*>((.|[\n\r])*)<\/ns1:'+inputName+'>/im');
+        // var pattern = /<ns1:order_number[^>]*>((.|[\n\r])*)<\/ns1:order_number>/im
+        var array_matches = pattern.exec(strVal);
+        $('#'+id).find('input[name=' + inputName + ']').val(array_matches[1]);
+
     };
     initRouter();
 });
