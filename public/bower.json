@@ -1,0 +1,17 @@
+{
+  "name": "public",
+  "homepage": "https://github.com/sbeloborodov/mock_soap_service",
+  "authors": [
+    "Sascha  Beloborodov <a.beloborodov@hotmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

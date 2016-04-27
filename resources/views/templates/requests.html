@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<table class="table table-bordered pagin-table">
+<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
     <thead>
     <tr>
         <th>Service</th>
@@ -30,7 +30,7 @@
     <tr dir-paginate="value in data | itemsPerPage:5 |  orderBy: 'created_at': true" total-items="totalItems">
         <td>{{ value.service }}</td>
         <td>{{ value.soap_action }}</td>
-        <td>{{ value.body }}</td>
+        <td class="xml-content">{{ value.body }}</td>
         <td title="{{value.created_at}}">{{ value.created_at }}</td>
         <td>{{ value.request_code }}</td>
         <td>

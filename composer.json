@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "wsdl2phpgenerator/wsdl2phpgenerator": "^3.3",
         "zendframework/zend-soap": "^2.5",
-        "jms/serializer": "^1.1"
+        "jms/serializer": "^1.1",
+        "barryvdh/laravel-debugbar": "^2.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

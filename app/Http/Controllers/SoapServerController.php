@@ -103,7 +103,7 @@ class SoapServerController extends Controller {
 
 
 
-        $server = new Server(null, [
+        $server = new Server($projectModel->wsdl_address, [
             'uri' => 'http://wsdl-client.loc/soap'
         ]);
 
@@ -143,7 +143,8 @@ class SoapServerController extends Controller {
         $service->setMainResponseClass($reflectorPropObjectStateGetResponse);
 
 //        $server->handle();
-        $response = $server->handle($this->body);
+//        $response = $server->handle($this->body);
+        $response = $server->handle();
 //        $server->handle($this->body);
 //
         Log::info($response);

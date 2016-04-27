@@ -1,3 +1,9 @@
+.container {
+    width: 100%;
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
 .entity-area ul {
     list-style: none;
     overflow: hidden;

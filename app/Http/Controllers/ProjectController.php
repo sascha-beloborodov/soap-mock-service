@@ -76,6 +76,7 @@ class ProjectController extends Controller
             $project->name = $request->name;
             $project->wsdl_name = $request->wsdl_name;
             $project->wsdl_path = $pathToUserDir;
+            $project->wsdl_address = 'http://http://wsdl-client.loc/wsdl/' . $user->id . '/' . $dirName . '/' . $request->wsdl_name;
             $project->user_id = $user->id;
             $project->dir_name = $dirName;
 
